@@ -29,7 +29,7 @@ module.exports = (grunt) ->
     coffee:
       compile:
         files:
-          'build/pmpsdk.js' : 'src/pmpsdk.coffee'
+          'build/pmpsdk.js' : ['src/pmpsdk.coffee', 'src/pmpcreds.coffee']
 
     # banner for the build files (with the correct kind of comments)
     wrap:
