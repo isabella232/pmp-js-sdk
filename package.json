@@ -2,7 +2,8 @@
   "name": "pmpsdk",
   "version": "0.0.0",
   "description": "Javascript api client for the Public Media Platform",
-  "main": "build/pmpsdk.min.js",
+  "homepage": "https://github.com/publicmediaplatform/pmp-js-sdk",
+  "main": "compile/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -16,6 +17,7 @@
     "sdk"
   ],
   "author": "cavis <r@cav.is> (http://cav.is)",
+  "owner": "Public Media Platform (http://pmp.io)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/publicmediaplatform/pmp-js-sdk/issues"
@@ -23,13 +25,14 @@
   "devDependencies": {
     "chai": "^1.9.1",
     "coffee-script": "^1.7.1",
-    "grunt": "^0.4.5",
-    "grunt-contrib-clean": "^0.5.0",
-    "grunt-contrib-coffee": "^0.10.1",
-    "grunt-contrib-uglify": "^0.4.0",
-    "grunt-contrib-watch": "^0.6.1",
-    "grunt-mocha-test": "^0.11.0",
-    "grunt-wrap": "^0.3.0",
+    "gulp": "^3.8.0",
+    "gulp-browserify": "^0.5.0",
+    "gulp-coffee": "^2.0.1",
+    "gulp-header": "^1.0.2",
+    "gulp-mocha": "^0.4.1",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.3.0",
+    "gulp-util": "^2.2.16",
     "mocha": "^1.20.1"
   },
   "dependencies": {
