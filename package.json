@@ -1,0 +1,38 @@
+{
+  "name": "pmpsdk",
+  "version": "0.0.0",
+  "description": "Javascript api client for the Public Media Platform",
+  "main": "build/pmpsdk.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/publicmediaplatform/pmp-js-sdk.git"
+  },
+  "keywords": [
+    "pmp",
+    "js",
+    "sdk"
+  ],
+  "author": "cavis <r@cav.is> (http://cav.is)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/publicmediaplatform/pmp-js-sdk/issues"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "coffee-script": "^1.7.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-coffee": "^0.10.1",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-mocha-test": "^0.11.0",
+    "grunt-wrap": "^0.3.0",
+    "mocha": "^1.20.1"
+  },
+  "dependencies": {
+    "request": "^2.36.0"
+  }
+}
