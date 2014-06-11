@@ -21,8 +21,8 @@ gulp.task 'watch', ->
 # compile coffeescript
 gulp.task 'compile', ->
   gulp.src('src/**/*.coffee')
-      .pipe(coffee(bare: true).on('error', gutil.log))
-      .pipe(gulp.dest('compile'))
+    .pipe(coffee(bare: true).on('error', gutil.log))
+    .pipe(gulp.dest('compile'))
 
 # browser compatible version
 banner =
@@ -37,11 +37,11 @@ banner =
   """
 gulp.task 'build', ['compile'], ->
   gulp.src('compile/index.js', read: false)
-      .pipe(browify())
-      .pipe(rename('pmpsdk.js'))
-      .pipe(header(banner, pkg: pkg))
-      .pipe(gulp.dest('build'))
-      .pipe(uglify())
-      .pipe(header(banner, pkg: pkg))
-      .pipe(rename('pmpsdk.min.js'))
-      .pipe(gulp.dest('build'))
+    .pipe(browify())
+    .pipe(rename('pmpsdk.js'))
+    .pipe(header(banner, pkg: pkg))
+    .pipe(gulp.dest('build'))
+    .pipe(uglify())
+    .pipe(header(banner, pkg: pkg))
+    .pipe(rename('pmpsdk.min.js'))
+    .pipe(gulp.dest('build'))
