@@ -18,6 +18,8 @@ responser = require('./responser')
 class Requester
 
   configDefaults:
+    auth:     null
+    accept:   'application/json'
     apiread:  'https://api-pilot.pmp.io'
     apiwrite: 'https://publish-pilot.pmp.io'
     apimedia: 'https://media-pilot.pmp.io'
@@ -25,12 +27,15 @@ class Requester
   constructor: (config = {}) ->
     @debug  = config.debug || false
     @config =
-      headers:  {}
+      auth:     config.auth     || @configDefaults.auth
+      accept:   config.accept   || @configDefaults.accept
       apiread:  config.apiread  || @configDefaults.apiread
       apiwrite: config.apiwrite || @configDefaults.apiwrite
       apimedia: config.apimedia || @configDefaults.apimedia
     if config.basicauth
       @setBasicAuth(config.basicauth.username, config.basicauth.password)
+    else if config.bearerauth
+      @setBearerAuth(config.bearerauth)
     else
       console.error('authorization method required')
 
@@ -38,12 +43,16 @@ class Requester
     console.error('basicauth requires username') unless uname
     console.error('basicauth requires password') unless pword
     encoded = new Buffer("#{uname}:#{pword}").toString('base64')
-    @config.headers['Authorization'] = "Basic #{encoded}"
+    @config.auth = "Basic #{encoded}"
+
+  setBearerAuth: (token) ->
+    console.error('bearerauth requires token') unless token
+    @config.auth = "Bearer #{token}"
 
   makeRequest: (params, callback) ->
     params.headers ||= {}
-    for name, value of @config.headers
-      params.headers[name] ||= value
+    params.headers['Authorization'] = @config.auth
+    params.headers['Accept'] = @config.accept
     params.json = true
     params.callback = responser(callback)
     request(params)
