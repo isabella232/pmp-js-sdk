@@ -8,14 +8,20 @@ rename  = require('gulp-rename')
 uglify  = require('gulp-uglify')
 gutil   = require('gulp-util')
 
+# error handler
+handleError = (err) ->
+  console.error(err.stack)
+  this.emit('end')
+
 # run tests
 gulp.task 'default', ['test']
 gulp.task 'test', ->
-  gulp.src('test/test-*.coffee', read: false)
+  gulp.src(['test/*.coffee', 'test/lib/*.coffee', 'test/models/*.coffee'], read: false)
     .pipe(mocha(reporter: 'spec'))
+    .on('error', handleError)
 
 # watch tests
-gulp.task 'watch', ->
+gulp.task 'watch', ['test'], ->
   gulp.watch(['src/**', 'test/**'], ['test'])
 
 # compile coffeescript

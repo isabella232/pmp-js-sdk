@@ -1,39 +1,30 @@
-expect   = require('chai').expect
-PmpCreds = require('../src/pmpcreds')
-CONFIG   = require('./config.json')
+test   = require('../support/test')
+_      = test.underscore
+expect = test.expect
+CONFIG = test.config
+Creds  = test.nocache('../../src/lib/creds')
 
-#
-# test generating credentials for a pmp user
-#
-goodcreds = new PmpCreds
+CREDCFG =
   username: CONFIG.username
   password: CONFIG.password
-  apiread:  CONFIG.apiread
-  apiwrite: CONFIG.apiwrite
-badcreds  = new PmpCreds
-  username: 'foo'
-  password: 'bar'
-  apiread:  CONFIG.apiread
-  apiwrite: CONFIG.apiwrite
-badserver = new PmpCreds
-  username: CONFIG.username
-  password: CONFIG.password
-  apiread:  'https://api-foobar.pmp.io'
-  apiwrite: 'https://publish-foobar.pmp.io'
+  host:     CONFIG.host
+  debug:    false
+
+goodcreds = new Creds(CREDCFG)
+badcreds  = new Creds(_.defaults({username: 'foobar'}, CREDCFG))
+badserver = new Creds(_.defaults({host: 'https://api-foobar.pmp.io'}, CREDCFG))
 
 # cleanup
 TESTLABEL = 'pmpcreds-test-label'
 after (done) ->
   goodcreds.list (resp) ->
-    testcreds = resp.radix.filter (cred) -> cred.label == TESTLABEL
-    testids = testcreds.map (cred) -> cred.client_id
-    nukeCred = (id) ->
+    testids = _.pluck _.where(resp.radix, label: TESTLABEL), 'client_id'
+    _.each testids, (id) ->
       goodcreds.destroy id, (dresp) ->
-        testids = testids.filter (tid) -> tid != id
+        testids = _.filter testids, (tid) -> tid != id
         done() if testids.length == 0
-    nukeCred id for id in testids
 
-describe 'pmp credentials', ->
+describe 'client credentials test', ->
 
   context 'with a valid login', ->
 

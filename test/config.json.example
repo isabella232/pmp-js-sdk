@@ -1,9 +1,0 @@
-{
-  "username":     "foo",
-  "password":     "bar",
-  "clientid":     "yourclientid",
-  "clientsecret": "yourclientsecret",
-  "apiread":      "https://api-foobar.pmp.io",
-  "apiwrite":     "https://publish-foobar.pmp.io",
-  "apimedia":     "https://media-foobar.pmp.io"
-}
