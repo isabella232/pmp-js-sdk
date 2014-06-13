@@ -29,7 +29,7 @@ class Creds
       @_request 'get', @_config.host, null, (resp) =>
         if resp.success
           @_home = new BaseDoc(resp.radix)
-          unless @_home.authIssue() && @_home.authRevoke()
+          unless @_home.credList() && @_home.credCreate() && @_home.credDestroy()
             resp.success = false
             resp.status  = 500
             resp.message = 'Home document missing auth token links'
@@ -38,26 +38,26 @@ class Creds
           callback(null, resp)
 
   list: (callback) ->
-    @home (doc, errorResp = null) =>
-      if doc
-        @_request 'get', doc.credList(), null, (resp) ->
+    @home (home, errorResp = null) =>
+      if home
+        @_request 'get', home.credList(), null, (resp) ->
           resp.radix = resp.radix.clients if resp.radix
           callback(resp)
       else
         callback(errorResp)
 
   create: (label, scope = 'read', expires = 1209600, callback) ->
-    @home (doc, errorResp = null) =>
-      if doc
+    @home (home, errorResp = null) =>
+      if home
         data = {label: label, scope: scope, token_expires_in: expires}
-        @_request 'post', doc.credCreate(), data, callback
+        @_request 'post', home.credCreate(), data, callback
       else
         callback(errorResp)
 
   destroy: (id, callback) ->
-    @home (doc, errorResp = null) =>
-      if doc
-        @_request 'delete', doc.credDestroy(id), null, callback
+    @home (home, errorResp = null) =>
+      if home
+        @_request 'delete', home.credDestroy(id), null, callback
       else
         callback(errorResp)
 
@@ -75,7 +75,7 @@ class Creds
       callback(@_home)
     else
       params = @_getRequestParams(method, url, data)
-      params.callback = responser(callback)
+      params.callback = responser.http(callback)
       params.callback = @_debugCallback(params, params.callback) if @_config.debug
       request(params)
 

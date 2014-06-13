@@ -52,10 +52,17 @@ statusToMessage = (status) ->
     when 505 then 'HTTP Version not supported'
     else 'Unknown'
 
-module.exports = (callback = null) ->
-  (err, resp, body) ->
-    if callback
-      if err
-        callback formatResponse(500, 'Unknown error')
-      else
-        callback formatResponse(resp.statusCode, null, body)
+module.exports =
+
+  # respond to http requests
+  http: (callback = null) ->
+    (err, resp, body) ->
+      if callback
+        if err
+          callback formatResponse(500, 'Unknown error')
+        else
+          callback formatResponse(resp.statusCode, null, body)
+
+  # respond with a fatal error message
+  error: (message, callback = null) ->
+    callback formatResponse(500, message)

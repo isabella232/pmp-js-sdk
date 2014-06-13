@@ -52,7 +52,7 @@ class Syncer
       callback(@_home)
     else
       params = @_getRequestParams(method, url, params)
-      params.callback = responser(callback)
+      params.callback = responser.http(callback)
       params.callback = @_debugCallback(params, params.callback) if @_config.debug
       request(params)
 
@@ -128,14 +128,14 @@ class Syncer
     opts =
       headers: {'Content-Type': 'application/x-www-form-urlencoded'}
       body: 'grant_type=client_credentials'
-    @_request 'post', @_home.authIssue(), opts, callback
+    @_request 'post', @_home.authCreate(), opts, callback
 
   # get home document
   _fetchHome: (callback) ->
     @_request 'get', @_config.host, null, (resp) =>
       if resp.success
         @_home = new BaseDoc(resp.radix)
-        unless @_home.authIssue()
+        unless @_home.authCreate()
           resp.success = false
           resp.status  = 500
           resp.message = 'Home document missing auth token issue link'
