@@ -10,7 +10,7 @@ CFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        true
+  debug:        false
 
 sdk = new PmpSdk(CFG)
 
@@ -18,7 +18,7 @@ describe 'pmpsdk test', ->
 
   it 'fetches a doc by guid', (done) ->
     sdk.fetchDoc TESTGUID, (doc) ->
-      console.log("GOT DOC", doc.href)
+      expect(doc.href).to.include(TESTGUID)
       done()
 
   it 'queries for document by guid', (done) ->
