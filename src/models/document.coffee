@@ -1,4 +1,5 @@
 _            = require('underscore')
+Guid         = require('Guid')
 BaseDocument = require('./base')
 responser    = require('../lib/responser')
 
@@ -7,6 +8,8 @@ responser    = require('../lib/responser')
 #
 class Document extends BaseDocument
   className: 'Document'
+  createMaxRequests: 30
+  createDelayMS:     1000
 
   # load a new doc by url
   @load: (syncer, url, callback) ->
@@ -45,6 +48,56 @@ class Document extends BaseDocument
       @constructor.load(@_syncer, link, callback)
     else
       callback(null, responser.error("Unknown link: #{urnOrObject}"))
+
+  # create or update, optionally waiting for 202 to resolve
+  save: (callback, wait = false) ->
+    @_syncer.home (home) =>
+      @attributes.guid = Guid.raw() unless @attributes.guid
+      @href = home.docFetch(@attributes.guid) unless @href
+      data =
+        version:    @version
+        attributes: @attributes
+        links:      @links
+      @_syncer.put home.docUpdate(@attributes.guid), data, (resp) =>
+        if resp.success
+          if resp.status == 202 && wait == true
+            @_pollForDocument(@href, callback)
+          else
+            @setData(resp.radix)
+            callback(@, resp)
+        else
+          callback(null, resp)
+
+  destroy: (callback) ->
+    @_syncer.home (home) =>
+      @_syncer.del home.docUpdate(@attributes.guid), (resp) =>
+        if resp.success
+          @href = null
+          @attributes.guid = null
+          callback(@, resp)
+        else
+          callback(null, resp)
+
+  ########  ########  #### ##     ##    ###    ######## ########
+  ##     ## ##     ##  ##  ##     ##   ## ##      ##    ##
+  ##     ## ##     ##  ##  ##     ##  ##   ##     ##    ##
+  ########  ########   ##  ##     ## ##     ##    ##    ######
+  ##        ##   ##    ##   ##   ##  #########    ##    ##
+  ##        ##    ##   ##    ## ##   ##     ##    ##    ##
+  ##        ##     ## ####    ###    ##     ##    ##    ########
+
+  # keep trying to GET document, until it appears
+  _pollForDocument: (url, callback, attempt = 1) ->
+    if attempt > @createMaxRequests
+      callback(@, responser.formatResponse(202, "Exceeded #{@createMaxRequests} max request for: #{url}"))
+    else
+      @_syncer.get url, (resp) =>
+        if resp.success
+          @setData(resp.radix)
+          callback(@, resp)
+        else
+          boundFn = _.bind(@_pollForDocument, @)
+          _.delay(boundFn, @createDelayMS, url, callback, attempt + 1)
 
 # class export
 module.exports = Document

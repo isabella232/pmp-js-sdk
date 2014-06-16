@@ -1,16 +1,10 @@
-BaseDocument = require('./base')
+Document = require('./document')
 
 #
-# file upload model
+# schema document
 #
-class Schema extends BaseDocument
-
-  constructor: (syncer, obj = {}) ->
-    @_syncer = syncer
-    super(obj)
-
-  save: (callback) ->
-    #todo
+class Schema extends Document
+  className: 'Schema'
 
 # class export
 module.exports = Schema

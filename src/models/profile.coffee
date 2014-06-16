@@ -1,16 +1,10 @@
-BaseDocument = require('./base')
+Document = require('./document')
 
 #
-# file upload model
+# profile document
 #
-class Profile extends BaseDocument
-
-  constructor: (syncer, obj = {}) ->
-    @_syncer = syncer
-    super(obj)
-
-  save: (callback) ->
-    #todo
+class Profile extends Document
+  className: 'Profile'
 
 # class export
 module.exports = Profile

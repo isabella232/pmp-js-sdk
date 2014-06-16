@@ -10,6 +10,7 @@ class Syncer
 
   configDefaults =
     accept:       'application/json'
+    contenttype:  'application/vnd.collection.doc+json'
     host:         'https://api-pilot.pmp.io'
     clientid:     null
     clientsecret: null
@@ -30,10 +31,10 @@ class Syncer
     @_requestOrQueue('get', url, null, callback)
 
   post: (url, data, callback) ->
-    @_requestOrQueue('post', url, {body: JSON.stringify(data)}, callback)
+    @_requestOrQueue('post', url, {body: JSON.stringify(data), headers: 'Content-Type': @_config.contenttype}, callback)
 
   put: (url, data, callback) ->
-    @_requestOrQueue('put', url, {body: JSON.stringify(data)}, callback)
+    @_requestOrQueue('put', url, {body: JSON.stringify(data), headers: 'Content-Type': @_config.contenttype}, callback)
 
   del: (url, callback) ->
     @_requestOrQueue('delete', url, null, callback)

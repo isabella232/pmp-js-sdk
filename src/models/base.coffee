@@ -13,11 +13,11 @@ class BaseDocument
     @setData(obj)
 
   setData: (obj) ->
-    @version    = obj.version    || null
+    @version    = obj.version    || '1.0'
     @href       = obj.href       || null
-    @attributes = obj.attributes || {}
-    @links      = obj.links      || {}
-    @items      = obj.items      || []
+    @attributes = _.clone(obj.attributes || {})
+    @links      = _.clone(obj.links      || {})
+    @items      = _.clone(obj.items      || [])
 
   findLink: (urn) ->
     found = null
@@ -45,15 +45,12 @@ class BaseDocument
   authCreate:  -> @findHref('urn:collectiondoc:form:issuetoken')
   authDestroy: -> @findHref('urn:collectiondoc:form:revoketoken')
   guidGenerate: -> @findHref('urn:collectiondoc:query:guids')
-  docCreate:        -> @findTpl('urn:collectiondoc:form:documentsave')
   docFetch:  (guid) -> @findTpl('urn:collectiondoc:hreftpl:docs', guid: guid)
   docUpdate: (guid) -> @findTpl('urn:collectiondoc:form:documentsave', guid: guid)
   docQuery: (parms) -> @findTpl('urn:collectiondoc:query:docs', parms)
-  profileCreate:        -> @findTpl('urn:collectiondoc:form:profilesave')
   profileFetch:  (guid) -> @findTpl('urn:collectiondoc:hreftpl:profiles', guid: guid)
   profileUpdate: (guid) -> @findTpl('urn:collectiondoc:form:profilesave', guid: guid)
   profileQuery: (parms) -> @findTpl('urn:collectiondoc:query:profiles', parms)
-  schemaCreate:        -> @findTpl('urn:collectiondoc:form:schemasa')
   schemaFetch:  (guid) -> @findTpl('urn:collectiondoc:hreftpl:schemas', guid: guid)
   schemaUpdate: (guid) -> @findTpl('urn:collectiondoc:form:schemasave', guid: guid)
   schemaQuery: (parms) -> @findTpl('urn:collectiondoc:query:schemas', parms)

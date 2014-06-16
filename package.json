@@ -38,6 +38,7 @@
     "uri-template": "^0.4.1"
   },
   "dependencies": {
+    "guid": "0.0.12",
     "request": "^2.36.0"
   }
 }
