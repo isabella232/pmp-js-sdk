@@ -7,6 +7,27 @@ url      = require('url')
 class Query extends Document
   className: 'Query'
 
+  @createEmpty: (url) ->
+    new Query
+      href: url
+      links:
+        navigation: [
+          {href: url, refs: ['self'], totalitems: 0, totalpages: 0, pagenum: 1}
+        ]
+      items: []
+
+  # 404's are an empty result
+  @load: (syncer, url, callback) ->
+    syncer.get url, (resp) =>
+      if resp.success
+        doc = new @(syncer, resp.radix)
+        callback(doc, resp)
+      else if resp.status == 404
+        doc = Query.createEmpty(url)
+        callback(doc, resp)
+      else
+        callback(null, resp)
+
   # grab params from the href
   setData: (obj) ->
     super(obj)
