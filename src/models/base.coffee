@@ -38,6 +38,12 @@ class BaseDocument
     else
       null
 
+  findProfileHref: ->
+    if @links.profile && @links.profile.length > 0
+      @links.profile[0].href
+    else
+      null
+
   # common links
   credList:         -> @authCreate().replace(/\/auth\/.*/, '/auth/credentials')
   credCreate:       -> @authDestroy().replace(/\/auth\/.*/, '/auth/credentials')
@@ -53,7 +59,7 @@ class BaseDocument
   profileQuery: (parms) -> @findTpl('urn:collectiondoc:query:profiles', parms)
   schemaFetch:  (guid) -> @findTpl('urn:collectiondoc:hreftpl:schemas', guid: guid)
   schemaUpdate: (guid) -> @findTpl('urn:collectiondoc:form:schemasave', guid: guid)
-  schemaQuery: (parms) -> @findTpl('urn:collectiondoc:query:schemas', parms)
+  schemaQuery: (parms) -> @findTpl('urn:collectiondoc:query:schemas', parms).replace('/users', '/schemas') # TODO: api bug
   uploadCreate: -> @findHref('urn:collectiondoc:form:mediaupload')
   groupQuery: (parms) -> @findTpl('urn:collectiondoc:query:groups', parms)
   userQuery: (parms) -> @findTpl('urn:collectiondoc:query:users', parms)

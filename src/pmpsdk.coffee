@@ -31,4 +31,23 @@ class PmpSdk
   queryUsers: (params, callback) ->
     @sync.home (home) => Query.load @sync, home.userQuery(params), callback
 
+  # creation
+  createDoc: (profileGuid, attrs, callback) ->
+    @fetchProfile profileGuid, (profile, resp) =>
+      if resp.success
+        data =
+          attributes: attrs,
+          links:
+            profile: [{href: profile.href}]
+        doc = new Document(@sync, data)
+        doc.save(callback, false)
+      else
+        callback(null, resp)
+  createProfile: () ->
+    # TODO
+  createSchema: () ->
+    # TODO
+  createUpload: () ->
+    # TODO
+
 module.exports = PmpSdk

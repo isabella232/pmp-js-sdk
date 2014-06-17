@@ -63,7 +63,7 @@ class Document extends BaseDocument
           if resp.status == 202 && wait == true
             @_pollForDocument(@href, callback)
           else
-            @setData(resp.radix)
+            @setData(resp.radix) if resp.status != 202
             callback(@, resp)
         else
           callback(null, resp)
