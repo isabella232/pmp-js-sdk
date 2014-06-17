@@ -1,4 +1,5 @@
 _        = require('underscore')
+Creds    = require('./lib/creds')
 Syncer   = require('./lib/syncer')
 Document = require('./models/document')
 Query    = require('./models/query')
@@ -9,7 +10,19 @@ Query    = require('./models/query')
 class PmpSdk
 
   constructor: (config = {}) ->
+    @config = config
     @sync = new Syncer(config)
+
+  # credentials (TODO: more better dry-er interface)
+  credList: (uname, pword, callback) ->
+    creds = new Creds(username: uname, password: pword, host: @config.host, debug: @config.debug)
+    creds.list(callback)
+  credCreate: (uname, pword, label, scope = 'read', expires = 1209600, callback) ->
+    creds = new Creds(username: uname, password: pword, host: @config.host, debug: @config.debug)
+    creds.create(label, scope, expires, callback)
+  credDestroy: (uname, pword, id, callback) ->
+    creds = new Creds(username: uname, password: pword, host: @config.host, debug: @config.debug)
+    creds.destroy(id, callback)
 
   # fetch by guid/alias
   fetchDoc: (guid, callback) ->

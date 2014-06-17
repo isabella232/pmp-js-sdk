@@ -6,6 +6,7 @@ PmpSdk  = test.nocache('../../src/pmpsdk')
 
 TESTGUID = '3501576e-1fb7-4b67-8628-3347d42666c3'
 TESTTAG  = 'pmp_js_sdk_testcontent'
+TESTCRED = null
 TESTDOC  =
   version: '1.0'
   attributes:
@@ -22,6 +23,31 @@ CFG =
 sdk = new PmpSdk(CFG)
 
 describe 'pmpsdk test', ->
+
+  describe '#creds', ->
+
+    it 'lists credentials', (done) ->
+      sdk.credList CONFIG.username, CONFIG.password, (resp) ->
+        expect(resp.status).to.equal(200)
+        expect(resp.success).to.be.true
+        expect(resp.radix).to.be.an('array')
+        done()
+
+    it 'creates credentials', (done) ->
+      sdk.credCreate CONFIG.username, CONFIG.password, TESTTAG, 'read', 10, (resp) ->
+        expect(resp.status).to.equal(200)
+        expect(resp.success).to.be.true
+        expect(resp.radix).to.be.an('object')
+        expect(resp.radix.label).to.equal(TESTTAG)
+        done()
+
+    it 'destroys credentials', (done) ->
+      sdk.credCreate CONFIG.username, CONFIG.password, TESTTAG, 'read', 1000, (resp) ->
+        expect(resp.success).to.be.true
+        sdk.credDestroy CONFIG.username, CONFIG.password, resp.radix.client_id, (dresp) ->
+          expect(dresp.status).to.equal(204)
+          expect(dresp.success).to.be.true
+          done()
 
   describe '#fetch', ->
 
