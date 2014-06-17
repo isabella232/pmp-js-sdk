@@ -42,9 +42,8 @@ banner =
 
   """
 gulp.task 'build', ['compile'], ->
-  gulp.src('compile/index.js', read: false)
+  gulp.src('compile/pmpsdk.js', read: false)
     .pipe(browify())
-    .pipe(rename('pmpsdk.js'))
     .pipe(header(banner, pkg: pkg))
     .pipe(gulp.dest('build'))
     .pipe(uglify())
