@@ -10,7 +10,7 @@ CFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        false
+  debug:        true
 sync = new Syncer(CFG)
 
 TESTHREF = null
@@ -89,7 +89,13 @@ after (done) ->
     else
       total = query.items.length
       _.each query.items, (doc) ->
-        doc.destroy (doc, resp) ->
-          expect(resp.status).to.equal(204)
+
+        # TODO: what's with the null results?
+        if doc.href
+          doc.destroy (doc, resp) ->
+            expect(resp.status).to.equal(204)
+            total = total - 1
+            done() if total == 0
+        else
           total = total - 1
           done() if total == 0
