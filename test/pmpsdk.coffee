@@ -4,7 +4,7 @@ expect  = test.expect
 CONFIG  = test.config
 PmpSdk  = test.nocache('../../src/pmpsdk')
 
-TESTGUID = '3501576e-1fb7-4b67-8628-3347d42666c3'
+TESTGUID = 'fabc86a2-4c7a-11e3-8e77-ce3f5508acd9'
 TESTTAG  = 'pmp_js_sdk_testcontent'
 TESTCRED = null
 TESTDOC  =
@@ -95,7 +95,7 @@ describe 'pmpsdk test', ->
     it 'queries for users', (done) ->
       sdk.queryUsers {limit: 1}, (query) ->
         expect(query.items.length).to.equal(1)
-        expect(query.items[0].findProfileHref()).to.include('organization')
+        expect(query.items[0].findProfileHref()).to.match(/user|organization/)
         done()
 
   describe '#create', ->
@@ -106,6 +106,13 @@ describe 'pmpsdk test', ->
         expect(doc.attributes.title).to.equal('i am a test document')
         expect(doc.findProfileHref()).to.include('story')
         expect(resp.status).to.equal(202)
+        done()
+
+    it 'hates invalid guids', (done) ->
+      attrs = {guid: '25c262f1-b29a-5d82-5dd0-3b29c9f5113$', title: 'i am a test document', tags: [TESTTAG]}
+      sdk.createDoc 'story', attrs, (doc, resp) ->
+        expect(resp.status).to.equal(400)
+        expect(doc).to.be.null
         done()
 
 # cleanup

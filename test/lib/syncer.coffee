@@ -5,7 +5,7 @@ CONFIG  = test.config
 Syncer  = test.nocache('../../src/lib/syncer')
 BaseDoc = test.nocache('../../src/models/base')
 
-TESTDOC = 'https://api-pilot.pmp.io/docs/3501576e-1fb7-4b67-8628-3347d42666c3'
+TESTDOC = "#{CONFIG.host}/docs/fabc86a2-4c7a-11e3-8e77-ce3f5508acd9"
 SYNCCFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
@@ -45,7 +45,7 @@ describe 'syncer test', ->
 
     it 'still got the home document', (done) ->
       unauthsync.home (doc) ->
-        expect(doc).to.be
+        expect(doc).to.be.an('object')
         done()
 
     it 'cannot get other documents', (done) ->
