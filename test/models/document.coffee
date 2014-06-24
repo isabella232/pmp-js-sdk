@@ -10,7 +10,7 @@ CFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        true
+  debug:        false
 sync = new Syncer(CFG)
 
 TESTHREF = null
