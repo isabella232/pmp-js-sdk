@@ -14,7 +14,7 @@ Syncer = (function() {
   configDefaults = {
     accept: 'application/json',
     contenttype: 'application/vnd.collection.doc+json',
-    host: 'https://api-pilot.pmp.io',
+    host: 'https://api-foobar.pmp.io',
     clientid: null,
     clientsecret: null,
     debug: false
@@ -90,7 +90,7 @@ Syncer = (function() {
       params.auth = {
         bearer: this._token
       };
-    } else {
+    } else if (this._config.clientid && this._config.clientsecret) {
       params.auth = {
         user: this._config.clientid,
         pass: this._config.clientsecret

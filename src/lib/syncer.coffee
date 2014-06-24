@@ -11,7 +11,7 @@ class Syncer
   configDefaults =
     accept:       'application/json'
     contenttype:  'application/vnd.collection.doc+json'
-    host:         'https://api-pilot.pmp.io'
+    host:         'https://api-foobar.pmp.io'
     clientid:     null
     clientsecret: null
     debug:        false
@@ -65,7 +65,7 @@ class Syncer
       delete params.auth
     else if @_token
       params.auth = {bearer: @_token}
-    else
+    else if @_config.clientid && @_config.clientsecret
       params.auth = {user: @_config.clientid, pass: @_config.clientsecret}
     params.json = true
     params.headers = _.defaults(params.headers || {}, {Accept: @_config.accept})

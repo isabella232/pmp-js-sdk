@@ -14,7 +14,7 @@ Creds = (function() {
   configDefaults = {
     accept: 'application/json',
     contentType: 'application/x-www-form-urlencoded',
-    host: 'https://api-pilot.pmp.io',
+    host: 'https://api-foobar.pmp.io',
     username: null,
     password: null,
     debug: false
