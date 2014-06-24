@@ -61,7 +61,9 @@ class Syncer
   _getRequestParams: (method, url, params) ->
     params.method = method.toUpperCase()
     params.url = url
-    if @_token
+    if params.auth == false
+      delete params.auth
+    else if @_token
       params.auth = {bearer: @_token}
     else
       params.auth = {user: @_config.clientid, pass: @_config.clientsecret}
@@ -102,7 +104,10 @@ class Syncer
     while @_queue.length > 0
       args = @_queue.shift()
       if errorResp
-        if _.first(args) == 'home' then _.last(args)(null) else _.last(args)(errorResp)
+        if _.first(args) == 'home'
+          _.last(args)(@_home)
+        else
+          _.last(args)(errorResp)
       else
         @_request.apply(@, args)
 
@@ -133,7 +138,7 @@ class Syncer
 
   # get home document
   _fetchHome: (callback) ->
-    @_request 'get', @_config.host, null, (resp) =>
+    @_request 'get', @_config.host, {auth: false}, (resp) =>
       if resp.success
         @_home = new BaseDoc(resp.radix)
         unless @_home.authCreate()
