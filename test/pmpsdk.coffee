@@ -18,6 +18,8 @@ TESTDOC  =
 CFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
+  username:     CONFIG.username
+  password:     CONFIG.password
   host:         CONFIG.host
   debug:        false
 sdk = new PmpSdk(CFG)
@@ -27,14 +29,14 @@ describe 'pmpsdk test', ->
   describe '#creds', ->
 
     it 'lists credentials', (done) ->
-      sdk.credList CONFIG.username, CONFIG.password, (resp) ->
+      sdk.credList (resp) ->
         expect(resp.status).to.equal(200)
         expect(resp.success).to.be.true
         expect(resp.radix).to.be.an('array')
         done()
 
     it 'creates credentials', (done) ->
-      sdk.credCreate CONFIG.username, CONFIG.password, TESTTAG, 'read', 10, (resp) ->
+      sdk.credCreate TESTTAG, 'read', 10, (resp) ->
         expect(resp.status).to.equal(200)
         expect(resp.success).to.be.true
         expect(resp.radix).to.be.an('object')
@@ -42,9 +44,9 @@ describe 'pmpsdk test', ->
         done()
 
     it 'destroys credentials', (done) ->
-      sdk.credCreate CONFIG.username, CONFIG.password, TESTTAG, 'read', 1000, (resp) ->
+      sdk.credCreate TESTTAG, 'read', 1000, (resp) ->
         expect(resp.success).to.be.true
-        sdk.credDestroy CONFIG.username, CONFIG.password, resp.radix.client_id, (dresp) ->
+        sdk.credDestroy resp.radix.client_id, (dresp) ->
           expect(dresp.status).to.equal(204)
           expect(dresp.success).to.be.true
           done()

@@ -14,17 +14,19 @@ class PmpSdk
     @sync = new Syncer(config)
 
   # credentials (TODO: more better dry-er interface)
-  credList: (uname, pword, callback) ->
-    creds = new Creds(username: uname, password: pword, host: @config.host, debug: @config.debug)
+  credList: (callback) ->
+    creds = new Creds(username: @config.username, password: @config.password, host: @config.host, debug: @config.debug)
     creds.list(callback)
-  credCreate: (uname, pword, label, scope = 'read', expires = 1209600, callback) ->
-    creds = new Creds(username: uname, password: pword, host: @config.host, debug: @config.debug)
+  credCreate: (label, scope = 'read', expires = 1209600, callback) ->
+    creds = new Creds(username: @config.username, password: @config.password, host: @config.host, debug: @config.debug)
     creds.create(label, scope, expires, callback)
-  credDestroy: (uname, pword, id, callback) ->
-    creds = new Creds(username: uname, password: pword, host: @config.host, debug: @config.debug)
+  credDestroy: (id, callback) ->
+    creds = new Creds(username: @config.username, password: @config.password, host: @config.host, debug: @config.debug)
     creds.destroy(id, callback)
 
   # fetch by guid/alias
+  fetchHome: (callback) ->
+    @sync.home callback
   fetchDoc: (guid, callback) ->
     @sync.home (home) => Document.load @sync, home.docFetch(guid), callback
   fetchProfile: (guid, callback) ->
