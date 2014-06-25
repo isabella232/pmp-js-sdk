@@ -1,5 +1,5 @@
 _            = require('underscore')
-Guid         = require('Guid')
+uuid         = require('uuid')
 BaseDocument = require('./base')
 responser    = require('../lib/responser')
 
@@ -52,7 +52,7 @@ class Document extends BaseDocument
   # create or update, optionally waiting for 202 to resolve
   save: (callback, wait = false) ->
     @_syncer.home (home) =>
-      @attributes.guid = Guid.raw() unless @attributes.guid
+      @attributes.guid = uuid.v4() unless @attributes.guid
       @href = home.docFetch(@attributes.guid) unless @href
       data =
         version:    @version

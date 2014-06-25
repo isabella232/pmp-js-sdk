@@ -1,5 +1,5 @@
 Document = require('./document')
-url      = require('url')
+nodeurl  = require('url')
 
 #
 # query result
@@ -32,7 +32,7 @@ class Query extends Document
   # grab params from the href
   setData: (obj) ->
     super(obj)
-    @params = url.parse(@href, true).query if @href
+    @params = nodeurl.parse(@href, true).query if @href
 
   # search metadata
   total:   -> @findLink('self').totalitems || 0

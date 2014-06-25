@@ -1,10 +1,10 @@
-var BaseDocument, Document, Guid, responser, _,
+var BaseDocument, Document, responser, uuid, _,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 _ = require('underscore');
 
-Guid = require('Guid');
+uuid = require('uuid');
 
 BaseDocument = require('./base');
 
@@ -83,7 +83,7 @@ Document = (function(_super) {
       return function(home) {
         var data;
         if (!_this.attributes.guid) {
-          _this.attributes.guid = Guid.raw();
+          _this.attributes.guid = uuid.v4();
         }
         if (!_this.href) {
           _this.href = home.docFetch(_this.attributes.guid);

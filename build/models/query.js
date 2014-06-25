@@ -1,10 +1,10 @@
-var Document, Query, url,
+var Document, Query, nodeurl,
   __hasProp = {}.hasOwnProperty,
   __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
 Document = require('./document');
 
-url = require('url');
+nodeurl = require('url');
 
 Query = (function(_super) {
   __extends(Query, _super);
@@ -55,7 +55,7 @@ Query = (function(_super) {
   Query.prototype.setData = function(obj) {
     Query.__super__.setData.call(this, obj);
     if (this.href) {
-      return this.params = url.parse(this.href, true).query;
+      return this.params = nodeurl.parse(this.href, true).query;
     }
   };
 
