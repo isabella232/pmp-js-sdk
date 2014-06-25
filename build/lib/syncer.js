@@ -25,6 +25,7 @@ Syncer = (function() {
       config = {};
     }
     this._home = null;
+    this._homeResp = null;
     this._queue = [];
     this._token = null;
     this._fetchingToken = false;
@@ -70,7 +71,7 @@ Syncer = (function() {
       callback = null;
     }
     if (method === 'home') {
-      return callback(this._home);
+      return callback(this._home, this._homeResp);
     } else {
       params = this._getRequestParams(method, url, params);
       params.callback = responser.http(callback);
@@ -121,6 +122,7 @@ Syncer = (function() {
       return function(err, resp, body) {
         if (err) {
           console.log("### ??? - " + params.method + " " + params.url);
+          console.log("###       " + err);
         } else {
           console.log("### " + resp.statusCode + " - " + params.method + " " + params.url);
         }
@@ -154,7 +156,7 @@ Syncer = (function() {
       args = this._queue.shift();
       if (errorResp) {
         if (_.first(args) === 'home') {
-          _results.push(_.last(args)(this._home));
+          _results.push(_.last(args)(this._home, this._homeResp));
         } else {
           _results.push(_.last(args)(errorResp));
         }
@@ -206,6 +208,7 @@ Syncer = (function() {
       auth: false
     }, (function(_this) {
       return function(resp) {
+        _this._homeResp = resp;
         if (resp.success) {
           _this._home = new BaseDoc(resp.radix);
           if (!_this._home.authCreate()) {

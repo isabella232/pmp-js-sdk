@@ -19,18 +19,18 @@ PmpSdk = (function() {
     this.sync = new Syncer(config);
   }
 
-  PmpSdk.prototype.credList = function(uname, pword, callback) {
+  PmpSdk.prototype.credList = function(callback) {
     var creds;
     creds = new Creds({
-      username: uname,
-      password: pword,
+      username: this.config.username,
+      password: this.config.password,
       host: this.config.host,
       debug: this.config.debug
     });
     return creds.list(callback);
   };
 
-  PmpSdk.prototype.credCreate = function(uname, pword, label, scope, expires, callback) {
+  PmpSdk.prototype.credCreate = function(label, scope, expires, callback) {
     var creds;
     if (scope == null) {
       scope = 'read';
@@ -39,23 +39,27 @@ PmpSdk = (function() {
       expires = 1209600;
     }
     creds = new Creds({
-      username: uname,
-      password: pword,
+      username: this.config.username,
+      password: this.config.password,
       host: this.config.host,
       debug: this.config.debug
     });
     return creds.create(label, scope, expires, callback);
   };
 
-  PmpSdk.prototype.credDestroy = function(uname, pword, id, callback) {
+  PmpSdk.prototype.credDestroy = function(id, callback) {
     var creds;
     creds = new Creds({
-      username: uname,
-      password: pword,
+      username: this.config.username,
+      password: this.config.password,
       host: this.config.host,
       debug: this.config.debug
     });
     return creds.destroy(id, callback);
+  };
+
+  PmpSdk.prototype.fetchHome = function(callback) {
+    return this.sync.home(callback);
   };
 
   PmpSdk.prototype.fetchDoc = function(guid, callback) {
@@ -151,31 +155,6 @@ PmpSdk = (function() {
   PmpSdk.prototype.createSchema = function() {};
 
   PmpSdk.prototype.createUpload = function() {};
-
-  PmpSdk.prototype.createUser = function(title, username, password, callback) {
-    var data, doc;
-    data = {
-      attributes: {
-        title: title,
-        address: [],
-        pingbacks: {},
-        auth: {
-          user: username,
-          password: password,
-          clients: []
-        }
-      },
-      links: {
-        profile: [
-          {
-            href: "" + this.config.host + "/profiles/user"
-          }
-        ]
-      }
-    };
-    doc = new Document(this.sync, data);
-    return doc.save(callback, true);
-  };
 
   return PmpSdk;
 
