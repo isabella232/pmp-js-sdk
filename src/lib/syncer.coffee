@@ -17,9 +17,10 @@ class Syncer
     debug:        false
 
   constructor: (config = {}) ->
-    @_home   = null
-    @_queue  = []
-    @_token  = null
+    @_home     = null
+    @_homeResp = null
+    @_queue    = []
+    @_token    = null
     @_fetchingToken = false
     @_config = _.defaults(config, configDefaults)
     @_authenticate()
@@ -50,7 +51,7 @@ class Syncer
   # http request
   _request: (method, url, params = {}, callback = null) ->
     if method == 'home'
-      callback(@_home)
+      callback(@_home, @_homeResp)
     else
       params = @_getRequestParams(method, url, params)
       params.callback = responser.http(callback)
@@ -85,7 +86,7 @@ class Syncer
     (err, resp, body) =>
       if err
         console.log "### ??? - #{params.method} #{params.url}"
-        # console.log "###       #{err}"
+        console.log "###       #{err}"
       else
         console.log "### #{resp.statusCode} - #{params.method} #{params.url}"
         # console.log "###       #{JSON.stringify(body)}"
@@ -105,7 +106,7 @@ class Syncer
       args = @_queue.shift()
       if errorResp
         if _.first(args) == 'home'
-          _.last(args)(@_home)
+          _.last(args)(@_home, @_homeResp)
         else
           _.last(args)(errorResp)
       else
@@ -139,6 +140,7 @@ class Syncer
   # get home document
   _fetchHome: (callback) ->
     @_request 'get', @_config.host, {auth: false}, (resp) =>
+      @_homeResp = resp
       if resp.success
         @_home = new BaseDoc(resp.radix)
         unless @_home.authCreate()
