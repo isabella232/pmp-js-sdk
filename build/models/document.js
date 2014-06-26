@@ -91,7 +91,8 @@ Document = (function(_super) {
         data = {
           version: _this.version,
           attributes: _this.attributes,
-          links: _this.links
+          attributes: _.omit(_this.attributes, 'created', 'modified'),
+          links: _.omit(_this.links, 'query', 'edit', 'auth', 'navigation', 'creator')
         };
         return _this._syncer.put(home.docUpdate(_this.attributes.guid), data, function(resp) {
           if (resp.success) {
