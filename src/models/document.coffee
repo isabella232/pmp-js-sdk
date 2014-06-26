@@ -57,7 +57,8 @@ class Document extends BaseDocument
       data =
         version:    @version
         attributes: @attributes
-        links:      @links
+        attributes: _.omit(@attributes, 'created', 'modified')
+        links:      _.omit(@links, 'query', 'edit', 'auth', 'navigation', 'creator')
       @_syncer.put home.docUpdate(@attributes.guid), data, (resp) =>
         if resp.success
           if resp.status == 202 && wait == true
