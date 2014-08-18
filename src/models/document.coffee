@@ -27,7 +27,7 @@ class Document extends BaseDocument
 
   # refresh from server
   refresh: (callback) ->
-    syncer.get @href, (resp) =>
+    @_syncer.get @href, (resp) =>
       if resp.success
         @setData(resp.radix)
         callback(@, resp)
