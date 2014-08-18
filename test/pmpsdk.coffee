@@ -119,6 +119,13 @@ describe 'pmpsdk test', ->
 
 # cleanup
 after (done) ->
+  sdk.credList (resp) ->
+    testids = _.pluck _.where(resp.radix, label: TESTTAG), 'client_id'
+    _.each testids, (id) ->
+      sdk.credDestroy id, (dresp) ->
+        testids = _.filter testids, (tid) -> tid != id
+        done() if testids.length == 0
+after (done) ->
   sdk.queryDocs {tag: TESTTAG}, (query) ->
     if query.items.length == 0
       done()
