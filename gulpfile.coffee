@@ -17,7 +17,7 @@ handleError = (err) ->
 gulp.task 'default', ['test']
 gulp.task 'test', ->
   gulp.src(['test/*.coffee', 'test/lib/*.coffee', 'test/models/*.coffee'], read: false)
-    .pipe(mocha(reporter: 'spec'))
+    .pipe(mocha(reporter: 'spec', timeout: 4000))
     .on('error', handleError)
 
 # watch tests
@@ -43,7 +43,7 @@ banner =
   """
 gulp.task 'browserify', ['build'], ->
   gulp.src('build/pmpsdk.js', read: false)
-    .pipe(browify())
+    .pipe(browify(standalone: 'PmpSdk'))
     .pipe(uglify())
     .pipe(header(banner, pkg: pkg))
     .pipe(rename('pmpsdk.min.js'))
