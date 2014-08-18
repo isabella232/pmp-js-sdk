@@ -42,7 +42,7 @@ Document = (function(_super) {
   }
 
   Document.prototype.refresh = function(callback) {
-    return syncer.get(this.href, (function(_this) {
+    return this._syncer.get(this.href, (function(_this) {
       return function(resp) {
         if (resp.success) {
           _this.setData(resp.radix);
