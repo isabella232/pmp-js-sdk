@@ -23,6 +23,8 @@ class PmpSdk
   credDestroy: (id, callback) ->
     creds = new Creds(username: @config.username, password: @config.password, host: @config.host, debug: @config.debug)
     creds.destroy(id, callback)
+  token: (callback) ->
+    @sync.token(callback)
 
   # fetch by guid/alias
   fetchHome: (callback) ->

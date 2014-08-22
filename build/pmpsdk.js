@@ -58,6 +58,10 @@ PmpSdk = (function() {
     return creds.destroy(id, callback);
   };
 
+  PmpSdk.prototype.token = function(callback) {
+    return this.sync.token(callback);
+  };
+
   PmpSdk.prototype.fetchHome = function(callback) {
     return this.sync.home(callback);
   };

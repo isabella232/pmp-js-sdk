@@ -12,7 +12,7 @@ Syncer = (function() {
   var configDefaults;
 
   configDefaults = {
-    accept: 'application/json',
+    accept: 'application/vnd.collection.doc+json',
     contenttype: 'application/vnd.collection.doc+json',
     host: 'https://api-foobar.pmp.io',
     clientid: null,
@@ -32,6 +32,14 @@ Syncer = (function() {
     this._config = _.defaults(config, configDefaults);
     this._authenticate();
   }
+
+  Syncer.prototype.token = function(callback) {
+    return this.home((function(_this) {
+      return function() {
+        return callback(_this._token);
+      };
+    })(this));
+  };
 
   Syncer.prototype.home = function(callback) {
     return this._requestOrQueue('home', null, null, callback);

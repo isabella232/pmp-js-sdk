@@ -9,7 +9,7 @@ BaseDoc   = require('../models/base')
 class Syncer
 
   configDefaults =
-    accept:       'application/json'
+    accept:       'application/vnd.collection.doc+json'
     contenttype:  'application/vnd.collection.doc+json'
     host:         'https://api-foobar.pmp.io'
     clientid:     null
@@ -24,6 +24,9 @@ class Syncer
     @_fetchingToken = false
     @_config = _.defaults(config, configDefaults)
     @_authenticate()
+
+  token: (callback) ->
+    @home => callback(@_token)
 
   home: (callback) ->
     @_requestOrQueue('home', null, null, callback)
