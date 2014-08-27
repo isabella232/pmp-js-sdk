@@ -39,7 +39,6 @@
     "request": "^2.40.0",
     "underscore": "^1.6.0",
     "uri-template": "^0.4.1",
-    "url": "^0.10.1",
     "uuid": "^1.4.1"
   }
 }

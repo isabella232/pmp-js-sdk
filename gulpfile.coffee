@@ -30,7 +30,11 @@ gulp.task 'build', ->
     .pipe(coffee(bare: true).on('error', gutil.log))
     .pipe(gulp.dest('build'))
 
-# TODO: browser compatible version
+# run a proxy server
+gulp.task 'proxy', ->
+  require('./test/support/proxy')
+
+# EXPERIMENTAL: browser compatible version
 banner =
   """
   /**
