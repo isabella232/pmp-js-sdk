@@ -130,7 +130,11 @@ PmpSdk = (function() {
     })(this));
   };
 
-  PmpSdk.prototype.createDoc = function(profileGuid, attrs, callback) {
+  PmpSdk.prototype.createDoc = function(profileGuid, attrs, wait, callback) {
+    if (_.isFunction(wait)) {
+      callback = wait;
+      wait = false;
+    }
     return this.fetchProfile(profileGuid, (function(_this) {
       return function(profile, resp) {
         var data, doc;
@@ -146,7 +150,7 @@ PmpSdk = (function() {
             }
           };
           doc = new Document(_this.sync, data);
-          return doc.save(callback, false);
+          return doc.save(wait, callback);
         } else {
           return callback(null, resp);
         }

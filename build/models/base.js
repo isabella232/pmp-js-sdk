@@ -17,9 +17,9 @@ BaseDocument = (function() {
   BaseDocument.prototype.setData = function(obj) {
     this.version = obj.version || '1.0';
     this.href = obj.href || null;
-    this.attributes = _.clone(obj.attributes || {});
-    this.links = _.clone(obj.links || {});
-    return this.items = _.clone(obj.items || []);
+    this.attributes = JSON.parse(JSON.stringify(obj.attributes || {}));
+    this.links = JSON.parse(JSON.stringify(obj.links || {}));
+    return this.items = JSON.parse(JSON.stringify(obj.items || []));
   };
 
   BaseDocument.prototype.findLink = function(urn) {

@@ -38,6 +38,7 @@ Document = (function(_super) {
       obj = {};
     }
     this._syncer = syncer;
+    this._lastMod = obj.attributes ? obj.attributes.modified : null;
     Document.__super__.constructor.call(this, obj);
   }
 
@@ -75,8 +76,9 @@ Document = (function(_super) {
     }
   };
 
-  Document.prototype.save = function(callback, wait) {
-    if (wait == null) {
+  Document.prototype.save = function(wait, callback) {
+    if (_.isFunction(wait)) {
+      callback = wait;
       wait = false;
     }
     return this._syncer.home((function(_this) {
@@ -90,7 +92,6 @@ Document = (function(_super) {
         }
         data = {
           version: _this.version,
-          attributes: _this.attributes,
           attributes: _.omit(_this.attributes, 'created', 'modified'),
           links: _.omit(_this.links, 'query', 'edit', 'auth', 'navigation', 'creator')
         };
@@ -135,10 +136,10 @@ Document = (function(_super) {
     if (attempt > this.createMaxRequests) {
       return callback(this, responser.formatResponse(202, "Exceeded " + this.createMaxRequests + " max request for: " + url));
     } else {
-      return this._syncer.get(url, (function(_this) {
+      return this._syncer.poll(url, (function(_this) {
         return function(resp) {
           var boundFn;
-          if (resp.success) {
+          if (resp.success && _this._lastMod !== resp.radix.attributes.modified) {
             _this.setData(resp.radix);
             return callback(_this, resp);
           } else {

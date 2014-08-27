@@ -1,4 +1,4 @@
-var BaseDoc, Syncer, request, responser, _;
+var BaseDoc, PkgJson, Syncer, request, responser, _;
 
 _ = require('underscore');
 
@@ -8,6 +8,8 @@ responser = require('./responser');
 
 BaseDoc = require('../models/base');
 
+PkgJson = require('../../package.json');
+
 Syncer = (function() {
   var configDefaults;
 
@@ -15,6 +17,7 @@ Syncer = (function() {
     accept: 'application/vnd.collection.doc+json',
     contenttype: 'application/vnd.collection.doc+json',
     host: 'https://api-foobar.pmp.io',
+    useragent: 'pmp-js-sdk-' + PkgJson.version,
     clientid: null,
     clientsecret: null,
     debug: false
@@ -47,6 +50,10 @@ Syncer = (function() {
 
   Syncer.prototype.get = function(url, callback) {
     return this._requestOrQueue('get', url, null, callback);
+  };
+
+  Syncer.prototype.poll = function(url, callback) {
+    return this._requestOrQueue('poll', url, null, callback);
   };
 
   Syncer.prototype.post = function(url, data, callback) {
@@ -92,6 +99,10 @@ Syncer = (function() {
 
   Syncer.prototype._getRequestParams = function(method, url, params) {
     params.method = method.toUpperCase();
+    params.originalMethod = params.method;
+    if (params.method === 'POLL') {
+      params.method = 'GET';
+    }
     params.url = url;
     if (params.auth === false) {
       delete params.auth;
@@ -107,7 +118,8 @@ Syncer = (function() {
     }
     params.json = true;
     params.headers = _.defaults(params.headers || {}, {
-      Accept: this._config.accept
+      'Accept': this._config.accept,
+      'User-Agent': this._config.useragent
     });
     return params;
   };
@@ -129,10 +141,10 @@ Syncer = (function() {
     return (function(_this) {
       return function(err, resp, body) {
         if (err) {
-          console.log("### ??? - " + params.method + " " + params.url);
+          console.log("### ??? - " + params.originalMethod + " " + params.url);
           console.log("###       " + err);
         } else {
-          console.log("### " + resp.statusCode + " - " + params.method + " " + params.url);
+          console.log("### " + resp.statusCode + " - " + params.originalMethod + " " + params.url);
         }
         return originalCallback(err, resp, body);
       };
