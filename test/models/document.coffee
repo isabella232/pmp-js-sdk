@@ -36,16 +36,18 @@ describe 'document test', ->
   describe '#save', ->
 
     it 'creates a new document, without waiting', (done) ->
-      callback = (doc, resp) ->
+      doc = new Document(sync, TESTDOC)
+      doc.save (doc, resp) ->
         expect(resp.status).to.equal(202)
         expect(doc.href).to.be
         expect(doc.attributes.guid).to.be
         done()
-      doc = new Document(sync, TESTDOC)
-      doc.save(callback, false)
 
     it 'creates a new document, waiting for resolution', (done) ->
-      callback = (doc, resp) ->
+      @timeout(30000)
+
+      doc = new Document(sync, TESTDOC)
+      doc.save true, (doc, resp) ->
         expect(resp.status).to.equal(200)
         expect(doc.href).to.be
         expect(doc.attributes.guid).to.be
@@ -56,19 +58,26 @@ describe 'document test', ->
         expect(doc.links.profile).to.include(TESTDOC.links.profile[0])
         TESTHREF = doc.href
         done()
-      @timeout(40000)
-      doc = new Document(sync, TESTDOC)
-      doc.save(callback, true)
 
     it 'updates an existing document, without waiting', (done) ->
       Document.load sync, TESTHREF, (doc, resp) ->
         expect(resp.status).to.equal(200)
-        callback = (doc, resp) ->
-          expect(resp.status).to.equal(200)
-          expect(doc.attributes.title).to.not.equal('foobar1')
-          done()
         doc.title = 'foobar1'
-        doc.save(callback, true)
+        doc.save (doc, resp) ->
+          expect(resp.status).to.equal(202)
+          expect(resp.radix.attributes?).to.be.false
+          done()
+
+    it 'updates an existing document, waiting for change', (done) ->
+      @timeout(30000)
+      Document.load sync, TESTHREF, (doc, resp) ->
+        expect(resp.status).to.equal(200)
+        doc.title = 'foobar1'
+        doc.save true, (doc, resp) ->
+          expect(resp.status).to.equal(200)
+          expect(resp.radix.attributes.title).to.equal('foobar1')
+          expect(doc.attributes.title).to.equal('foobar1')
+          done()
 
   describe '#destroy', ->
 

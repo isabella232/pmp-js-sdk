@@ -49,7 +49,10 @@ class PmpSdk
     @sync.home (home) => Query.load @sync, home.userQuery(params), callback
 
   # creation
-  createDoc: (profileGuid, attrs, callback) ->
+  createDoc: (profileGuid, attrs, wait, callback) ->
+    if _.isFunction(wait)
+      callback = wait
+      wait = false
     @fetchProfile profileGuid, (profile, resp) =>
       if resp.success
         data =
@@ -57,7 +60,7 @@ class PmpSdk
           links:
             profile: [{href: profile.href}]
         doc = new Document(@sync, data)
-        doc.save(callback, false)
+        doc.save(wait, callback)
       else
         callback(null, resp)
   createProfile: () ->
