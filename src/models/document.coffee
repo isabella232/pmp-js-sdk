@@ -23,6 +23,7 @@ class Document extends BaseDocument
   # create doc from object
   constructor: (syncer, obj = {}) ->
     @_syncer = syncer
+    @_lastMod = if obj.attributes then obj.attributes.modified else null
     super(obj)
 
   # refresh from server
@@ -50,13 +51,15 @@ class Document extends BaseDocument
       callback(null, responser.error("Unknown link: #{urnOrObject}"))
 
   # create or update, optionally waiting for 202 to resolve
-  save: (callback, wait = false) ->
+  save: (wait, callback) ->
+    if _.isFunction(wait)
+      callback = wait
+      wait = false
     @_syncer.home (home) =>
       @attributes.guid = uuid.v4() unless @attributes.guid
       @href = home.docFetch(@attributes.guid) unless @href
       data =
         version:    @version
-        attributes: @attributes
         attributes: _.omit(@attributes, 'created', 'modified')
         links:      _.omit(@links, 'query', 'edit', 'auth', 'navigation', 'creator')
       @_syncer.put home.docUpdate(@attributes.guid), data, (resp) =>
@@ -92,8 +95,8 @@ class Document extends BaseDocument
     if attempt > @createMaxRequests
       callback(@, responser.formatResponse(202, "Exceeded #{@createMaxRequests} max request for: #{url}"))
     else
-      @_syncer.get url, (resp) =>
-        if resp.success
+      @_syncer.poll url, (resp) =>
+        if resp.success && @_lastMod != resp.radix.attributes.modified
           @setData(resp.radix)
           callback(@, resp)
         else

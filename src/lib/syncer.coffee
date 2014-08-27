@@ -34,6 +34,9 @@ class Syncer
   get: (url, callback) ->
     @_requestOrQueue('get', url, null, callback)
 
+  poll: (url, callback) ->
+    @_requestOrQueue('poll', url, null, callback)
+
   post: (url, data, callback) ->
     @_requestOrQueue('post', url, {body: JSON.stringify(data), headers: 'Content-Type': @_config.contenttype}, callback)
 
@@ -64,6 +67,8 @@ class Syncer
   # assemble params
   _getRequestParams: (method, url, params) ->
     params.method = method.toUpperCase()
+    params.originalMethod = params.method
+    params.method = 'GET' if params.method == 'POLL'
     params.url = url
     if params.auth == false
       delete params.auth
@@ -88,10 +93,10 @@ class Syncer
   _debugCallback: (params, originalCallback) ->
     (err, resp, body) =>
       if err
-        console.log "### ??? - #{params.method} #{params.url}"
+        console.log "### ??? - #{params.originalMethod} #{params.url}"
         console.log "###       #{err}"
       else
-        console.log "### #{resp.statusCode} - #{params.method} #{params.url}"
+        console.log "### #{resp.statusCode} - #{params.originalMethod} #{params.url}"
         # console.log "###       #{JSON.stringify(body)}"
       originalCallback(err, resp, body)
 

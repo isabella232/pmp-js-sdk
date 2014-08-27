@@ -15,9 +15,9 @@ class BaseDocument
   setData: (obj) ->
     @version    = obj.version    || '1.0'
     @href       = obj.href       || null
-    @attributes = _.clone(obj.attributes || {})
-    @links      = _.clone(obj.links      || {})
-    @items      = _.clone(obj.items      || [])
+    @attributes = JSON.parse(JSON.stringify(obj.attributes || {}))
+    @links      = JSON.parse(JSON.stringify(obj.links      || {}))
+    @items      = JSON.parse(JSON.stringify(obj.items      || []))
 
   findLink: (urn) ->
     found = null
