@@ -2,6 +2,7 @@ _         = require('underscore')
 request   = require('request')
 responser = require('./responser')
 BaseDoc   = require('../models/base')
+PkgJson   = require('../../package.json')
 
 #
 # http requests against the pmp api
@@ -12,6 +13,7 @@ class Syncer
     accept:       'application/vnd.collection.doc+json'
     contenttype:  'application/vnd.collection.doc+json'
     host:         'https://api-foobar.pmp.io'
+    useragent:    'pmp-js-sdk-' + PkgJson.version
     clientid:     null
     clientsecret: null
     debug:        false
@@ -77,7 +79,10 @@ class Syncer
     else if @_config.clientid && @_config.clientsecret
       params.auth = {user: @_config.clientid, pass: @_config.clientsecret}
     params.json = true
-    params.headers = _.defaults(params.headers || {}, {Accept: @_config.accept})
+    params.headers = _.defaults(params.headers || {}, {
+      'Accept': @_config.accept,
+      'User-Agent': @_config.useragent
+    })
     params
 
   # retry 401's once - for token expirations
