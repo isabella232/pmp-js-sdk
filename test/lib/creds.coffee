@@ -8,7 +8,7 @@ CREDCFG =
   username: CONFIG.username
   password: CONFIG.password
   host:     CONFIG.host
-  debug:    false
+  debug:    test.debug
 
 goodcreds = new Creds(CREDCFG)
 badcreds  = new Creds(_.defaults({username: 'foobar'}, CREDCFG))

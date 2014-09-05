@@ -9,7 +9,7 @@ sync = new Syncer
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        false
+  debug:        test.debug
 
 describe 'query test', ->
   @timeout(3000)

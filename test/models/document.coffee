@@ -10,7 +10,7 @@ CFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        false
+  debug:        test.debug
 sync = new Syncer(CFG)
 
 TESTHREF = null
@@ -62,7 +62,7 @@ describe 'document test', ->
     it 'updates an existing document, without waiting', (done) ->
       Document.load sync, TESTHREF, (doc, resp) ->
         expect(resp.status).to.equal(200)
-        doc.title = 'foobar1'
+        doc.attributes.title = 'foobar1'
         doc.save (doc, resp) ->
           expect(resp.status).to.equal(202)
           expect(resp.radix.attributes?).to.be.false
@@ -72,11 +72,11 @@ describe 'document test', ->
       @timeout(30000)
       Document.load sync, TESTHREF, (doc, resp) ->
         expect(resp.status).to.equal(200)
-        doc.title = 'foobar1'
+        doc.attributes.title = 'foobar2'
         doc.save true, (doc, resp) ->
           expect(resp.status).to.equal(200)
-          expect(resp.radix.attributes.title).to.equal('foobar1')
-          expect(doc.attributes.title).to.equal('foobar1')
+          expect(resp.radix.attributes.title).to.equal('foobar2')
+          expect(doc.attributes.title).to.equal('foobar2')
           done()
 
   describe '#destroy', ->
@@ -98,13 +98,7 @@ after (done) ->
     else
       total = query.items.length
       _.each query.items, (doc) ->
-
-        # TODO: what's with the null results?
-        if doc.href
-          doc.destroy (doc, resp) ->
-            expect(resp.status).to.equal(204)
-            total = total - 1
-            done() if total == 0
-        else
+        doc.destroy (doc, resp) ->
+          expect(resp.status).to.equal(204)
           total = total - 1
           done() if total == 0

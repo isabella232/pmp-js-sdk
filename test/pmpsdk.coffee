@@ -21,7 +21,7 @@ CFG =
   username:     CONFIG.username
   password:     CONFIG.password
   host:         CONFIG.host
-  debug:        false
+  debug:        test.debug
 sdk = new PmpSdk(CFG)
 
 describe 'pmpsdk test', ->
@@ -67,6 +67,14 @@ describe 'pmpsdk test', ->
       sdk.fetchSchema 'story', (schema) ->
         expect(schema.href).to.include('story')
         done()
+
+    it 'fetches users', (done) ->
+      sdk.fetchUser 'me', (user) ->
+        expect(user.href).to.include('me')
+        expect(user.attributes.auth.user).to.equal(CONFIG.username)
+        sdk.fetchUser user.attributes.guid, (user2) ->
+          expect(user2.attributes.title).to.equal(user.attributes.title)
+          done()
 
   describe '#query', ->
 
