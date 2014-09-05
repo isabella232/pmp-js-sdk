@@ -74,7 +74,7 @@ class Document extends BaseDocument
 
   destroy: (callback) ->
     @_syncer.home (home) =>
-      @_syncer.del home.docUpdate(@attributes.guid), (resp) =>
+      @_syncer.del home.docDelete(@attributes.guid), (resp) =>
         if resp.success
           @href = null
           @attributes.guid = null

@@ -35,6 +35,8 @@ class PmpSdk
     @sync.home (home) => Document.load @sync, home.profileFetch(guid), callback
   fetchSchema: (guid, callback) ->
     @sync.home (home) => Document.load @sync, home.schemaFetch(guid), callback
+  fetchUser: (guid, callback) ->
+    @sync.home (home) => Document.load @sync, home.userFetch(guid), callback
 
   # querying
   queryDocs: (params, callback) ->
@@ -63,10 +65,6 @@ class PmpSdk
         doc.save(wait, callback)
       else
         callback(null, resp)
-  createProfile: () ->
-    # TODO
-  createSchema: () ->
-    # TODO
   createUpload: () ->
     # TODO
 

@@ -90,6 +90,14 @@ PmpSdk = (function() {
     })(this));
   };
 
+  PmpSdk.prototype.fetchUser = function(guid, callback) {
+    return this.sync.home((function(_this) {
+      return function(home) {
+        return Document.load(_this.sync, home.userFetch(guid), callback);
+      };
+    })(this));
+  };
+
   PmpSdk.prototype.queryDocs = function(params, callback) {
     return this.sync.home((function(_this) {
       return function(home) {
@@ -157,10 +165,6 @@ PmpSdk = (function() {
       };
     })(this));
   };
-
-  PmpSdk.prototype.createProfile = function() {};
-
-  PmpSdk.prototype.createSchema = function() {};
 
   PmpSdk.prototype.createUpload = function() {};
 

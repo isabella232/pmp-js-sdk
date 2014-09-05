@@ -60,15 +60,17 @@ BaseDocument = (function() {
   };
 
   BaseDocument.prototype.credList = function() {
-    return this.authCreate().replace(/\/auth\/.*/, '/auth/credentials');
+    return this.findHref('urn:collectiondoc:form:listcredentials');
   };
 
   BaseDocument.prototype.credCreate = function() {
-    return this.authDestroy().replace(/\/auth\/.*/, '/auth/credentials');
+    return this.findHref('urn:collectiondoc:form:createcredentials');
   };
 
   BaseDocument.prototype.credDestroy = function(id) {
-    return this.authDestroy().replace(/\/auth\/.*/, "/auth/credentials/" + id);
+    return this.findTpl('urn:collectiondoc:form:removecredentials', {
+      client_id: id
+    });
   };
 
   BaseDocument.prototype.authCreate = function() {
@@ -77,10 +79,6 @@ BaseDocument = (function() {
 
   BaseDocument.prototype.authDestroy = function() {
     return this.findHref('urn:collectiondoc:form:revoketoken');
-  };
-
-  BaseDocument.prototype.guidGenerate = function() {
-    return this.findHref('urn:collectiondoc:query:guids');
   };
 
   BaseDocument.prototype.docFetch = function(guid) {
@@ -95,18 +93,18 @@ BaseDocument = (function() {
     });
   };
 
+  BaseDocument.prototype.docDelete = function(guid) {
+    return this.findTpl('urn:collectiondoc:form:documentdelete', {
+      guid: guid
+    });
+  };
+
   BaseDocument.prototype.docQuery = function(parms) {
     return this.findTpl('urn:collectiondoc:query:docs', parms);
   };
 
   BaseDocument.prototype.profileFetch = function(guid) {
     return this.findTpl('urn:collectiondoc:hreftpl:profiles', {
-      guid: guid
-    });
-  };
-
-  BaseDocument.prototype.profileUpdate = function(guid) {
-    return this.findTpl('urn:collectiondoc:form:profilesave', {
       guid: guid
     });
   };
@@ -121,14 +119,8 @@ BaseDocument = (function() {
     });
   };
 
-  BaseDocument.prototype.schemaUpdate = function(guid) {
-    return this.findTpl('urn:collectiondoc:form:schemasave', {
-      guid: guid
-    });
-  };
-
   BaseDocument.prototype.schemaQuery = function(parms) {
-    return this.findTpl('urn:collectiondoc:query:schemas', parms).replace('/users', '/schemas');
+    return this.findTpl('urn:collectiondoc:query:schemas', parms);
   };
 
   BaseDocument.prototype.uploadCreate = function() {
@@ -137,6 +129,12 @@ BaseDocument = (function() {
 
   BaseDocument.prototype.groupQuery = function(parms) {
     return this.findTpl('urn:collectiondoc:query:groups', parms);
+  };
+
+  BaseDocument.prototype.userFetch = function(guid) {
+    return this.findTpl('urn:collectiondoc:hreftpl:users', {
+      guid: guid
+    });
   };
 
   BaseDocument.prototype.userQuery = function(parms) {
