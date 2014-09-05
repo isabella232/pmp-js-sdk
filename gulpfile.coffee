@@ -9,9 +9,13 @@ uglify  = require('gulp-uglify')
 gutil   = require('gulp-util')
 
 # error handler
+swallowErrors = false
 handleError = (err) ->
   console.error(err.stack)
-  this.emit('end')
+  if swallowErrors
+    @emit('end')
+  else
+    process.exit(1)
 
 # run tests
 gulp.task 'default', ['test']
@@ -22,6 +26,7 @@ gulp.task 'test', ->
 
 # watch tests
 gulp.task 'watch', ['test'], ->
+  swallowErrors = true
   gulp.watch(['src/**', 'test/**'], ['test'])
 
 # compile coffeescript
