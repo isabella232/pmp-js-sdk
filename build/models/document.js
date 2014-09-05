@@ -116,7 +116,7 @@ Document = (function(_super) {
   Document.prototype.destroy = function(callback) {
     return this._syncer.home((function(_this) {
       return function(home) {
-        return _this._syncer.del(home.docUpdate(_this.attributes.guid), function(resp) {
+        return _this._syncer.del(home.docDelete(_this.attributes.guid), function(resp) {
           if (resp.success) {
             _this.href = null;
             _this.attributes.guid = null;
