@@ -19,6 +19,7 @@ TESTLABEL = 'pmpcreds-test-label'
 after (done) ->
   goodcreds.list (resp) ->
     testids = _.pluck _.where(resp.radix, label: TESTLABEL), 'client_id'
+    done() if testids.length == 0
     _.each testids, (id) ->
       goodcreds.destroy id, (dresp) ->
         testids = _.filter testids, (tid) -> tid != id
