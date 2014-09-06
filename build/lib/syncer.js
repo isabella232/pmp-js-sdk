@@ -79,6 +79,7 @@ Syncer = (function() {
   };
 
   Syncer.prototype._request = function(method, url, params, callback) {
+    var wrappedCallback;
     if (params == null) {
       params = {};
     }
@@ -89,11 +90,11 @@ Syncer = (function() {
       return callback(this._home, this._homeResp);
     } else {
       params = this._getRequestParams(method, url, params);
-      params.callback = responser.http(callback);
+      wrappedCallback = responser.http(callback);
       if (this._config.debug) {
-        params.callback = this._debugCallback(params, params.callback);
+        wrappedCallback = this._debugCallback(params, wrappedCallback);
       }
-      return request(params);
+      return request(params, wrappedCallback);
     }
   };
 

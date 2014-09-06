@@ -113,7 +113,7 @@ Creds = (function() {
   };
 
   Creds.prototype._request = function(method, url, data, callback) {
-    var params;
+    var params, wrappedCallback;
     if (data == null) {
       data = {};
     }
@@ -124,11 +124,11 @@ Creds = (function() {
       return callback(this._home);
     } else {
       params = this._getRequestParams(method, url, data);
-      params.callback = responser.http(callback);
+      wrappedCallback = responser.http(callback);
       if (this._config.debug) {
-        params.callback = this._debugCallback(params, params.callback);
+        wrappedCallback = this._debugCallback(params, wrappedCallback);
       }
-      return request(params);
+      return request(params, wrappedCallback);
     }
   };
 
