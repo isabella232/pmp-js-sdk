@@ -75,9 +75,9 @@ class Creds
       callback(@_home)
     else
       params = @_getRequestParams(method, url, data)
-      params.callback = responser.http(callback)
-      params.callback = @_debugCallback(params, params.callback) if @_config.debug
-      request(params)
+      wrappedCallback = responser.http(callback)
+      wrappedCallback = @_debugCallback(params, wrappedCallback) if @_config.debug
+      request(params, wrappedCallback)
 
   # assemble params
   _getRequestParams: (method, url, data) ->
