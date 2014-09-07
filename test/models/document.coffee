@@ -10,10 +10,9 @@ CFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        false
-sync = new Syncer(CFG)
+  debug:        test.debug
 
-TESTHREF = null
+SAVEDDOC = false
 TESTTAG  = 'pmp_js_sdk_testcontent'
 TESTDOC  =
   version: '1.0'
@@ -25,10 +24,13 @@ TESTDOC  =
 
 describe 'document test', ->
 
+  before ->
+    @sync = new Syncer(CFG)
+
   describe '#load', ->
 
     it 'fetches the home document', (done) ->
-      Document.load sync, CONFIG.host, (doc, resp) ->
+      Document.load @sync, CONFIG.host, (doc, resp) ->
         expect(doc).to.be
         expect(doc.href).to.match(///#{CONFIG.host}///)
         done()
@@ -36,7 +38,7 @@ describe 'document test', ->
   describe '#save', ->
 
     it 'creates a new document, without waiting', (done) ->
-      doc = new Document(sync, TESTDOC)
+      doc = new Document(@sync, TESTDOC)
       doc.save (doc, resp) ->
         expect(resp.status).to.equal(202)
         expect(doc.href).to.be
@@ -46,7 +48,7 @@ describe 'document test', ->
     it 'creates a new document, waiting for resolution', (done) ->
       @timeout(30000)
 
-      doc = new Document(sync, TESTDOC)
+      doc = new Document(@sync, TESTDOC)
       doc.save true, (doc, resp) ->
         expect(resp.status).to.equal(200)
         expect(doc.href).to.be
@@ -56,55 +58,52 @@ describe 'document test', ->
         expect(doc.attributes.tags).to.include(TESTTAG)
         expect(doc.links.creator).to.be.an('array')
         expect(doc.links.profile).to.include(TESTDOC.links.profile[0])
-        TESTHREF = doc.href
+        SAVEDDOC = doc
         done()
-
-    it 'updates an existing document, without waiting', (done) ->
-      Document.load sync, TESTHREF, (doc, resp) ->
-        expect(resp.status).to.equal(200)
-        doc.title = 'foobar1'
-        doc.save (doc, resp) ->
-          expect(resp.status).to.equal(202)
-          expect(resp.radix.attributes?).to.be.false
-          done()
 
     it 'updates an existing document, waiting for change', (done) ->
       @timeout(30000)
-      Document.load sync, TESTHREF, (doc, resp) ->
+
+      unless SAVEDDOC
+        expect().fail('no saved doc - bailing!')
+
+      SAVEDDOC.attributes.title = 'foobar2'
+      SAVEDDOC.save true, (doc, resp) ->
         expect(resp.status).to.equal(200)
-        doc.title = 'foobar1'
-        doc.save true, (doc, resp) ->
-          expect(resp.status).to.equal(200)
-          expect(resp.radix.attributes.title).to.equal('foobar1')
-          expect(doc.attributes.title).to.equal('foobar1')
-          done()
+        expect(resp.radix.attributes.title).to.equal('foobar2')
+        expect(doc.attributes.title).to.equal('foobar2')
+        done()
+
+    it 'updates an existing document, without waiting', (done) ->
+      unless SAVEDDOC
+        expect().fail('no saved doc - bailing!')
+
+      SAVEDDOC.attributes.title = 'foobar1'
+      SAVEDDOC.save (doc, resp) ->
+        expect(resp.status).to.equal(202)
+        expect(resp.radix.attributes?).to.be.false
+        done()
 
   describe '#destroy', ->
 
     it 'deletes existing documents', (done) ->
-      Document.load sync, TESTHREF, (doc, resp) ->
-        expect(resp.status).to.equal(200)
-        doc.destroy (doc, resp) ->
-          expect(resp.status).to.equal(204)
-          expect(doc.href).to.be.null
-          done()
+      unless SAVEDDOC
+        expect().fail('no saved doc - bailing!')
 
-# cleanup
-after (done) ->
-  sdk = new PmpSdk(CFG)
-  sdk.queryDocs {tag: TESTTAG}, (query) ->
-    if query.items.length == 0
-      done()
-    else
-      total = query.items.length
-      _.each query.items, (doc) ->
+      SAVEDDOC.destroy (doc, resp) ->
+        expect(resp.status).to.equal(204)
+        expect(doc.href).to.be.null
+        done()
 
-        # TODO: what's with the null results?
-        if doc.href
+  # cleanup
+  after (done) ->
+    sdk = new PmpSdk(CFG)
+    sdk.queryDocs {tag: TESTTAG}, (query) ->
+      if query.items.length == 0
+        done()
+      else
+        total = query.items.length
+        _.each query.items, (doc) ->
           doc.destroy (doc, resp) ->
-            expect(resp.status).to.equal(204)
             total = total - 1
             done() if total == 0
-        else
-          total = total - 1
-          done() if total == 0

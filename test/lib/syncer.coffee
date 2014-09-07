@@ -10,7 +10,7 @@ SYNCCFG =
   clientid:     CONFIG.clientid
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
-  debug:        false
+  debug:        test.debug
 
 describe 'syncer test', ->
 

@@ -1,13 +1,7 @@
 request = require('request')
 http    = require('http')
 url     = require('url')
-
-# required configuration
-config = require('./config.json')
-if !config.host || !config.clientid || !config.clientsecret
-  console.log('You need to create a valid config.json file!')
-  process.exit(1)
-
+config  = require('./config.coffee')
 
 # optional configuration
 proxyHost = process.env['PROXY_HOST'] || 'http://localhost'
