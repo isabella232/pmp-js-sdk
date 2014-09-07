@@ -5,14 +5,14 @@
 
 A Node.JS module, providing a javascript API client for the [Public Media Platform](http://publicmediaplatform.org).  Also includes an experimental browser-ready javascript package.
 
-**WARNING! ACHTUNG!** This module is under development - it will be published to NPM once the interfaces stabilize.  Until then, use at your own risk.
+**WARNING! ACHTUNG!** This module is under heavy development - use at your own risk.
 
 ## Installation
 
 Install with the Node.JS package manager [npm](http://npmjs.org/)
 
 ```shell
-$ npm install git://github.com/publicmediaplatform/pmp-js-sdk.git
+$ npm install pmpsdk
 ```
 
 or install via git clone:
