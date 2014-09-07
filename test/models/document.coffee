@@ -11,7 +11,6 @@ CFG =
   clientsecret: CONFIG.clientsecret
   host:         CONFIG.host
   debug:        test.debug
-sync = new Syncer(CFG)
 
 TESTHREF = null
 TESTTAG  = 'pmp_js_sdk_testcontent'
@@ -25,10 +24,13 @@ TESTDOC  =
 
 describe 'document test', ->
 
+  before ->
+    @sync = new Syncer(CFG)
+
   describe '#load', ->
 
     it 'fetches the home document', (done) ->
-      Document.load sync, CONFIG.host, (doc, resp) ->
+      Document.load @sync, CONFIG.host, (doc, resp) ->
         expect(doc).to.be
         expect(doc.href).to.match(///#{CONFIG.host}///)
         done()
@@ -36,7 +38,7 @@ describe 'document test', ->
   describe '#save', ->
 
     it 'creates a new document, without waiting', (done) ->
-      doc = new Document(sync, TESTDOC)
+      doc = new Document(@sync, TESTDOC)
       doc.save (doc, resp) ->
         expect(resp.status).to.equal(202)
         expect(doc.href).to.be
@@ -46,7 +48,7 @@ describe 'document test', ->
     it 'creates a new document, waiting for resolution', (done) ->
       @timeout(30000)
 
-      doc = new Document(sync, TESTDOC)
+      doc = new Document(@sync, TESTDOC)
       doc.save true, (doc, resp) ->
         expect(resp.status).to.equal(200)
         expect(doc.href).to.be
@@ -60,7 +62,7 @@ describe 'document test', ->
         done()
 
     it 'updates an existing document, without waiting', (done) ->
-      Document.load sync, TESTHREF, (doc, resp) ->
+      Document.load @sync, TESTHREF, (doc, resp) ->
         expect(resp.status).to.equal(200)
         doc.attributes.title = 'foobar1'
         doc.save (doc, resp) ->
@@ -70,7 +72,7 @@ describe 'document test', ->
 
     it 'updates an existing document, waiting for change', (done) ->
       @timeout(30000)
-      Document.load sync, TESTHREF, (doc, resp) ->
+      Document.load @sync, TESTHREF, (doc, resp) ->
         expect(resp.status).to.equal(200)
         doc.attributes.title = 'foobar2'
         doc.save true, (doc, resp) ->
@@ -82,23 +84,22 @@ describe 'document test', ->
   describe '#destroy', ->
 
     it 'deletes existing documents', (done) ->
-      Document.load sync, TESTHREF, (doc, resp) ->
+      Document.load @sync, TESTHREF, (doc, resp) ->
         expect(resp.status).to.equal(200)
         doc.destroy (doc, resp) ->
           expect(resp.status).to.equal(204)
           expect(doc.href).to.be.null
           done()
 
-# cleanup
-after (done) ->
-  sdk = new PmpSdk(CFG)
-  sdk.queryDocs {tag: TESTTAG}, (query) ->
-    if query.items.length == 0
-      done()
-    else
-      total = query.items.length
-      _.each query.items, (doc) ->
-        doc.destroy (doc, resp) ->
-          expect(resp.status).to.equal(204)
-          total = total - 1
-          done() if total == 0
+  # cleanup
+  after (done) ->
+    sdk = new PmpSdk(CFG)
+    sdk.queryDocs {tag: TESTTAG}, (query) ->
+      if query.items.length == 0
+        done()
+      else
+        total = query.items.length
+        _.each query.items, (doc) ->
+          doc.destroy (doc, resp) ->
+            total = total - 1
+            done() if total == 0

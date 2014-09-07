@@ -22,21 +22,23 @@ CFG =
   password:     CONFIG.password
   host:         CONFIG.host
   debug:        test.debug
-sdk = new PmpSdk(CFG)
 
 describe 'pmpsdk test', ->
+
+  before ->
+    @sdk = new PmpSdk(CFG)
 
   describe '#creds', ->
 
     it 'lists credentials', (done) ->
-      sdk.credList (resp) ->
+      @sdk.credList (resp) ->
         expect(resp.status).to.equal(200)
         expect(resp.success).to.be.true
         expect(resp.radix).to.be.an('array')
         done()
 
     it 'creates credentials', (done) ->
-      sdk.credCreate TESTTAG, 'read', 10, (resp) ->
+      @sdk.credCreate TESTTAG, 'read', 10, (resp) ->
         expect(resp.status).to.equal(200)
         expect(resp.success).to.be.true
         expect(resp.radix).to.be.an('object')
@@ -44,9 +46,9 @@ describe 'pmpsdk test', ->
         done()
 
     it 'destroys credentials', (done) ->
-      sdk.credCreate TESTTAG, 'read', 1000, (resp) ->
+      @sdk.credCreate TESTTAG, 'read', 1000, (resp) =>
         expect(resp.success).to.be.true
-        sdk.credDestroy resp.radix.client_id, (dresp) ->
+        @sdk.credDestroy resp.radix.client_id, (dresp) ->
           expect(dresp.status).to.equal(204)
           expect(dresp.success).to.be.true
           done()
@@ -54,56 +56,56 @@ describe 'pmpsdk test', ->
   describe '#fetch', ->
 
     it 'fetches docs', (done) ->
-      sdk.fetchDoc TESTGUID, (doc) ->
+      @sdk.fetchDoc TESTGUID, (doc) ->
         expect(doc.href).to.include(TESTGUID)
         done()
 
     it 'fetches profiles', (done) ->
-      sdk.fetchProfile 'story', (profile) ->
+      @sdk.fetchProfile 'story', (profile) ->
         expect(profile.href).to.include('story')
         done()
 
     it 'fetches schemas', (done) ->
-      sdk.fetchSchema 'story', (schema) ->
+      @sdk.fetchSchema 'story', (schema) ->
         expect(schema.href).to.include('story')
         done()
 
     it 'fetches users', (done) ->
-      sdk.fetchUser 'me', (user) ->
+      @sdk.fetchUser 'me', (user) =>
         expect(user.href).to.include('me')
         expect(user.attributes.auth.user).to.equal(CONFIG.username)
-        sdk.fetchUser user.attributes.guid, (user2) ->
+        @sdk.fetchUser user.attributes.guid, (user2) ->
           expect(user2.attributes.title).to.equal(user.attributes.title)
           done()
 
   describe '#query', ->
 
     it 'queries for docs', (done) ->
-      sdk.queryDocs {limit: 1}, (query) ->
+      @sdk.queryDocs {limit: 1}, (query) ->
         expect(query.items.length).to.equal(1)
         done()
 
     it 'queries for groups', (done) ->
-      sdk.queryGroups {limit: 1}, (query) ->
+      @sdk.queryGroups {limit: 1}, (query) ->
         expect(query.items.length).to.equal(1)
         expect(query.items[0].items.length).to.be.above(0)
         expect(query.items[0].findProfileHref()).to.include('group')
         done()
 
     it 'queries for profiles', (done) ->
-      sdk.queryProfiles {limit: 1}, (query) ->
+      @sdk.queryProfiles {limit: 1}, (query) ->
         expect(query.items.length).to.equal(1)
         expect(query.items[0].findProfileHref()).to.include('profile')
         done()
 
     it 'queries for schemas', (done) ->
-      sdk.querySchemas {limit: 1}, (query) ->
+      @sdk.querySchemas {limit: 1}, (query) ->
         expect(query.items.length).to.equal(1)
         expect(query.items[0].findProfileHref()).to.include('schema')
         done()
 
     it 'queries for users', (done) ->
-      sdk.queryUsers {limit: 1}, (query) ->
+      @sdk.queryUsers {limit: 1}, (query) ->
         expect(query.items.length).to.equal(1)
         expect(query.items[0].findProfileHref()).to.match(/user|organization/)
         done()
@@ -112,7 +114,7 @@ describe 'pmpsdk test', ->
 
     it 'creates documents', (done) ->
       attrs = {title: 'i am a test document', tags: [TESTTAG]}
-      sdk.createDoc 'story', attrs, (doc, resp) ->
+      @sdk.createDoc 'story', attrs, (doc, resp) ->
         expect(doc.attributes.title).to.equal('i am a test document')
         expect(doc.findProfileHref()).to.include('story')
         expect(resp.status).to.equal(202)
@@ -120,30 +122,25 @@ describe 'pmpsdk test', ->
 
     it 'hates invalid guids', (done) ->
       attrs = {guid: '25c262f1-b29a-5d82-5dd0-3b29c9f5113$', title: 'i am a test document', tags: [TESTTAG]}
-      sdk.createDoc 'story', attrs, (doc, resp) ->
+      @sdk.createDoc 'story', attrs, (doc, resp) ->
         expect(resp.status).to.equal(400)
         expect(doc).to.be.null
         done()
 
-# cleanup
-after (done) ->
-  sdk.credList (resp) ->
-    testids = _.pluck _.where(resp.radix, label: TESTTAG), 'client_id'
-    _.each testids, (id) ->
-      sdk.credDestroy id, (dresp) ->
-        testids = _.filter testids, (tid) -> tid != id
-        done() if testids.length == 0
-after (done) ->
-  sdk.queryDocs {tag: TESTTAG}, (query) ->
-    if query.items.length == 0
-      done()
-    else
+  # cleanup
+  after (done) ->
+    @sdk.credList (resp) =>
+      testids = _.pluck _.where(resp.radix, label: TESTTAG), 'client_id'
+      done() if testids.length == 0
+      _.each testids, (id) =>
+        @sdk.credDestroy id, (dresp) ->
+          testids = _.filter testids, (tid) -> tid != id
+          done() if testids.length == 0
+  after (done) ->
+    @sdk.queryDocs {tag: TESTTAG}, (query) ->
       total = query.items.length
+      done() if total == 0
       _.each query.items, (doc) ->
         doc.destroy (doc, resp) ->
-          if resp.status == 401
-            # TODO: search is still catching up
-          else
-            expect(resp.status).to.equal(204)
           total = total - 1
           done() if total == 0
