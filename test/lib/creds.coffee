@@ -14,7 +14,6 @@ CREDCFG =
 describe 'client credentials test', ->
 
   before ->
-    console.log '------------------------- before -----------------------------'
     @goodcreds = new Creds(CREDCFG)
     @badcreds  = new Creds(_.defaults({username: 'foobar'}, CREDCFG))
     @badserver = new Creds(_.defaults({host: 'https://api-foobar.pmp.io'}, CREDCFG))
