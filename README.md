@@ -1,6 +1,7 @@
 # PMP Javascript SDK
 
 [![Build Status](https://travis-ci.org/publicmediaplatform/pmp-js-sdk.svg?branch=master)](https://travis-ci.org/publicmediaplatform/pmp-js-sdk)
+[![NPM version](https://badge.fury.io/js/pmpsdk.svg)](http://badge.fury.io/js/pmpsdk)
 
 A Node.JS module, providing a javascript API client for the [Public Media Platform](http://publicmediaplatform.org).  Also includes an experimental browser-ready javascript package.
 
