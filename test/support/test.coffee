@@ -19,7 +19,3 @@ module.exports =
   nocache: (module) ->
     delete require.cache[require.resolve(module)]
     require(module)
-
-# ci seems to run better with some delay
-if process.env.TRAVIS_JOB_NUMBER
-  beforeEach (done) -> setTimeout(done, 500)
