@@ -44,24 +44,34 @@ class BaseDocument
     else
       null
 
-  # common links
-  credList:             -> @findHref('urn:collectiondoc:form:listcredentials')
-  credCreate:           -> @findHref('urn:collectiondoc:form:createcredentials')
-  credDestroy:     (id) -> @findTpl('urn:collectiondoc:form:removecredentials', client_id: id)
-  authCreate:           -> @findHref('urn:collectiondoc:form:issuetoken')
-  authDestroy:          -> @findHref('urn:collectiondoc:form:revoketoken')
+  # auth links
+  credList:         -> @findHref('urn:collectiondoc:form:listcredentials')
+  credCreate:       -> @findHref('urn:collectiondoc:form:createcredentials')
+  credDestroy: (id) -> @findTpl('urn:collectiondoc:form:removecredentials', client_id: id)
+  authCreate:       -> @findHref('urn:collectiondoc:form:issuetoken')
+  authDestroy:      -> @findHref('urn:collectiondoc:form:revoketoken')
+
+  # docs and aliases
   docFetch:      (guid) -> @findTpl('urn:collectiondoc:hreftpl:docs', guid: guid)
   docUpdate:     (guid) -> @findTpl('urn:collectiondoc:form:documentsave', guid: guid)
   docDelete:     (guid) -> @findTpl('urn:collectiondoc:form:documentdelete', guid: guid)
   docQuery:     (parms) -> @findTpl('urn:collectiondoc:query:docs', parms)
+  groupQuery:   (parms) -> @findTpl('urn:collectiondoc:query:groups', parms)
   profileFetch:  (guid) -> @findTpl('urn:collectiondoc:hreftpl:profiles', guid: guid)
   profileQuery: (parms) -> @findTpl('urn:collectiondoc:query:profiles', parms)
   schemaFetch:   (guid) -> @findTpl('urn:collectiondoc:hreftpl:schemas', guid: guid)
   schemaQuery:  (parms) -> @findTpl('urn:collectiondoc:query:schemas', parms)
-  uploadCreate:         -> @findHref('urn:collectiondoc:form:mediaupload')
-  groupQuery:   (parms) -> @findTpl('urn:collectiondoc:query:groups', parms)
+  topicFetch:    (guid) -> @findTpl('urn:collectiondoc:hreftpl:topics', guid: guid)
+  topicQuery:   (parms) -> @findTpl('urn:collectiondoc:query:topics', parms)
   userFetch:     (guid) -> @findTpl('urn:collectiondoc:hreftpl:users', guid: guid)
   userQuery:    (parms) -> @findTpl('urn:collectiondoc:query:users', parms)
+
+  # oddball - query within a collection
+  collectionQuery: (guid, parms) ->
+    @findTpl('urn:collectiondoc:query:collection', _.extend({}, parms, guid: guid))
+
+  # file upload
+  uploadCreate: -> @findHref('urn:collectiondoc:form:mediaupload')
 
 # class export
 module.exports = BaseDocument

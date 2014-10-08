@@ -35,10 +35,14 @@ class PmpSdk
     @sync.home (home) => Document.load @sync, home.profileFetch(guid), callback
   fetchSchema: (guid, callback) ->
     @sync.home (home) => Document.load @sync, home.schemaFetch(guid), callback
+  fetchTopic: (guid, callback) ->
+    @sync.home (home) => Document.load @sync, home.topicFetch(guid), callback
   fetchUser: (guid, callback) ->
     @sync.home (home) => Document.load @sync, home.userFetch(guid), callback
 
   # querying
+  queryCollection: (guid, params, callback) ->
+    @sync.home (home) => Query.load @sync, home.collectionQuery(guid, params), callback
   queryDocs: (params, callback) ->
     @sync.home (home) => Query.load @sync, home.docQuery(params), callback
   queryGroups: (params, callback) ->
@@ -47,6 +51,8 @@ class PmpSdk
     @sync.home (home) => Query.load @sync, home.profileQuery(params), callback
   querySchemas: (params, callback) ->
     @sync.home (home) => Query.load @sync, home.schemaQuery(params), callback
+  queryTopics: (params, callback) ->
+    @sync.home (home) => Query.load @sync, home.topicQuery(params), callback
   queryUsers: (params, callback) ->
     @sync.home (home) => Query.load @sync, home.userQuery(params), callback
 
