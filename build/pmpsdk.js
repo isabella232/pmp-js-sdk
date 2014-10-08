@@ -90,10 +90,26 @@ PmpSdk = (function() {
     })(this));
   };
 
+  PmpSdk.prototype.fetchTopic = function(guid, callback) {
+    return this.sync.home((function(_this) {
+      return function(home) {
+        return Document.load(_this.sync, home.topicFetch(guid), callback);
+      };
+    })(this));
+  };
+
   PmpSdk.prototype.fetchUser = function(guid, callback) {
     return this.sync.home((function(_this) {
       return function(home) {
         return Document.load(_this.sync, home.userFetch(guid), callback);
+      };
+    })(this));
+  };
+
+  PmpSdk.prototype.queryCollection = function(guid, params, callback) {
+    return this.sync.home((function(_this) {
+      return function(home) {
+        return Query.load(_this.sync, home.collectionQuery(guid, params), callback);
       };
     })(this));
   };
@@ -126,6 +142,14 @@ PmpSdk = (function() {
     return this.sync.home((function(_this) {
       return function(home) {
         return Query.load(_this.sync, home.schemaQuery(params), callback);
+      };
+    })(this));
+  };
+
+  PmpSdk.prototype.queryTopics = function(params, callback) {
+    return this.sync.home((function(_this) {
+      return function(home) {
+        return Query.load(_this.sync, home.topicQuery(params), callback);
       };
     })(this));
   };

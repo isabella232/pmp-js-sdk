@@ -103,6 +103,10 @@ BaseDocument = (function() {
     return this.findTpl('urn:collectiondoc:query:docs', parms);
   };
 
+  BaseDocument.prototype.groupQuery = function(parms) {
+    return this.findTpl('urn:collectiondoc:query:groups', parms);
+  };
+
   BaseDocument.prototype.profileFetch = function(guid) {
     return this.findTpl('urn:collectiondoc:hreftpl:profiles', {
       guid: guid
@@ -123,12 +127,14 @@ BaseDocument = (function() {
     return this.findTpl('urn:collectiondoc:query:schemas', parms);
   };
 
-  BaseDocument.prototype.uploadCreate = function() {
-    return this.findHref('urn:collectiondoc:form:mediaupload');
+  BaseDocument.prototype.topicFetch = function(guid) {
+    return this.findTpl('urn:collectiondoc:hreftpl:topics', {
+      guid: guid
+    });
   };
 
-  BaseDocument.prototype.groupQuery = function(parms) {
-    return this.findTpl('urn:collectiondoc:query:groups', parms);
+  BaseDocument.prototype.topicQuery = function(parms) {
+    return this.findTpl('urn:collectiondoc:query:topics', parms);
   };
 
   BaseDocument.prototype.userFetch = function(guid) {
@@ -139,6 +145,16 @@ BaseDocument = (function() {
 
   BaseDocument.prototype.userQuery = function(parms) {
     return this.findTpl('urn:collectiondoc:query:users', parms);
+  };
+
+  BaseDocument.prototype.collectionQuery = function(guid, parms) {
+    return this.findTpl('urn:collectiondoc:query:collection', _.extend({}, parms, {
+      collection: guid
+    }));
+  };
+
+  BaseDocument.prototype.uploadCreate = function() {
+    return this.findHref('urn:collectiondoc:form:mediaupload');
   };
 
   return BaseDocument;
