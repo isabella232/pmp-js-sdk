@@ -149,7 +149,7 @@ BaseDocument = (function() {
 
   BaseDocument.prototype.collectionQuery = function(guid, parms) {
     return this.findTpl('urn:collectiondoc:query:collection', _.extend({}, parms, {
-      collection: guid
+      guid: guid
     }));
   };
 
