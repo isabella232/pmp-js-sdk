@@ -162,6 +162,14 @@ PmpSdk = (function() {
     })(this));
   };
 
+  PmpSdk.prototype.fetchUrl = function(url, callback) {
+    return Document.load(this.sync, url, callback);
+  };
+
+  PmpSdk.prototype.queryUrl = function(url, callback) {
+    return Query.load(this.sync, url, callback);
+  };
+
   PmpSdk.prototype.createDoc = function(profileGuid, attrs, wait, callback) {
     if (_.isFunction(wait)) {
       callback = wait;

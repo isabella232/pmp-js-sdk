@@ -56,6 +56,12 @@ class PmpSdk
   queryUsers: (params, callback) ->
     @sync.home (home) => Query.load @sync, home.userQuery(params), callback
 
+  # direct access by absolute url
+  fetchUrl: (url, callback) ->
+    Document.load @sync, url, callback
+  queryUrl: (url, callback) ->
+    Query.load @sync, url, callback
+
   # creation
   createDoc: (profileGuid, attrs, wait, callback) ->
     if _.isFunction(wait)

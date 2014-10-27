@@ -32,7 +32,7 @@ class BaseDocument
     else
       null
 
-  findTpl: (urn, params) ->
+  findTpl: (urn, params = {}) ->
     if href = @findHref(urn)
       parser.parse(href).expand(params)
     else

@@ -44,6 +44,9 @@ BaseDocument = (function() {
 
   BaseDocument.prototype.findTpl = function(urn, params) {
     var href;
+    if (params == null) {
+      params = {};
+    }
     if (href = this.findHref(urn)) {
       return parser.parse(href).expand(params);
     } else {
