@@ -8,7 +8,7 @@ responser    = require('../lib/responser')
 #
 class Document extends BaseDocument
   className: 'Document'
-  createMaxRequests: 30
+  createMaxRequests: 45
   createDelayMS:     1000
 
   # load a new doc by url

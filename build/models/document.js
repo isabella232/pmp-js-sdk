@@ -15,7 +15,7 @@ Document = (function(_super) {
 
   Document.prototype.className = 'Document';
 
-  Document.prototype.createMaxRequests = 30;
+  Document.prototype.createMaxRequests = 45;
 
   Document.prototype.createDelayMS = 1000;
 
