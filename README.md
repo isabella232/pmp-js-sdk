@@ -29,7 +29,7 @@ The [PMP API Docs](http://support.pmp.io/docs) contain several examples of how t
 
 ```javascript
 var PmpSdk = require('pmpsdk');
-var sdk = new PmpSdk({client_id: 'MYID', client_secret: 'MYSECRET', host: 'https://api.pmp.io'});
+var sdk = new PmpSdk({clientid: 'MYID', clientsecret: 'MYSECRET', host: 'https://api.pmp.io'});
 
 sdk.fetchDoc('04224975-e93c-4b17-9df9-96db37d318f3', (doc, resp) {
   console.log(resp.status);          // 200
