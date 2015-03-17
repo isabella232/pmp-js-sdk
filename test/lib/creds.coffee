@@ -22,41 +22,36 @@ describe 'client credentials test', ->
 
     it 'lists credentials', (done) ->
       @goodcreds.list (resp) ->
-        expect(resp.status).to.equal(200)
-        expect(resp.success).to.be.true
-        expect(resp.radix).to.be.an('array')
+        expect(resp).to.be.a.response(200)
         done()
 
     it 'creates credentials', (done) ->
       @goodcreds.create TESTLABEL, null, null, (resp) ->
-        expect(resp.status).to.equal(200)
-        expect(resp.success).to.be.true
-        expect(resp.radix).to.be.an('object')
+        expect(resp).to.be.a.response(200)
         expect(resp.radix.label).to.equal(TESTLABEL)
         done()
 
     it 'destroys credentials', (done) ->
       @goodcreds.create TESTLABEL, null, null, (resp) =>
-        expect(resp.success).to.be.true
+        expect(resp).to.be.a.response(200)
         @goodcreds.destroy resp.radix.client_id, (dresp) ->
-          expect(dresp.status).to.equal(204)
-          expect(dresp.success).to.be.true
+          expect(dresp).to.be.a.response(204)
           done()
 
   context 'with an invalid login', ->
 
     it 'fails to list credentials', (done) ->
       @badcreds.list (resp) ->
-        expect(resp.status).to.equal(401)
-        expect(resp.success).to.be.false
-        expect(resp.radix).to.be.null
+        expect(resp).to.be.a.response(401)
+        expect(resp.radix.errors).to.be.an('object')
+        expect(resp.radix.errors.title).to.equal('Unauthorized')
         done()
 
   context 'with an invalid api location', ->
 
     it 'fails to find the server', (done) ->
       @badserver.list (resp) ->
-        expect(resp.status).to.equal(500)
+        expect(resp).to.be.a.response(500)
         done()
 
   # cleanup

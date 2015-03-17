@@ -11,6 +11,8 @@ class PmpSdk
 
   constructor: (config = {}) ->
     @config = config
+    @config.clientid = @config.client_id if @config.client_id
+    @config.clientsecret = @config.client_secret if @config.client_secret
     @sync = new Syncer(config)
 
   # credentials (TODO: more better dry-er interface)

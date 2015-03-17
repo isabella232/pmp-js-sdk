@@ -17,6 +17,8 @@ class Syncer
     clientid:     null
     clientsecret: null
     debug:        false
+    minimal:      true
+    gzipped:      true
 
   constructor: (config = {}) ->
     @_home     = null
@@ -63,7 +65,8 @@ class Syncer
     else
       params = @_getRequestParams(method, url, params)
       wrappedCallback = responser.http(callback)
-      wrappedCallback = @_debugCallback(params, wrappedCallback) if @_config.debug
+      wrappedCallback = responser.safeDecode(wrappedCallback)
+      wrappedCallback = @_debugCallback(params, wrappedCallback, @_config.debug) if @_config.debug
       request(params, wrappedCallback)
 
   # assemble params
@@ -78,11 +81,17 @@ class Syncer
       params.auth = {bearer: @_token}
     else if @_config.clientid && @_config.clientsecret
       params.auth = {user: @_config.clientid, pass: @_config.clientsecret}
-    params.json = true
     params.headers = _.defaults(params.headers || {}, {
       'Accept': @_config.accept,
       'User-Agent': @_config.useragent
     })
+
+    # optional gzipped and minimal responses
+    if @_config.minimal && @_token
+      params.headers['Prefer'] = 'return=minimal'
+    if @_config.gzipped
+      params.gzip = true
+
     params
 
   # retry 401's once - for token expirations
@@ -92,17 +101,18 @@ class Syncer
         @_queue.push(args)
         @_authenticate()
       else
-        originalCallback(resp)
+        originalCallback.apply(@, arguments)
 
   # debugging
-  _debugCallback: (params, originalCallback) ->
+  _debugCallback: (params, originalCallback, level) ->
     (err, resp, body) =>
       if err
         console.log "### ??? - #{params.originalMethod} #{params.url}"
         console.log "###       #{err}"
       else
         console.log "### #{resp.statusCode} - #{params.originalMethod} #{params.url}"
-        # console.log "###       #{JSON.stringify(body)}"
+        if level == 2 || level == '2'
+          console.log "###       #{body}"
       originalCallback(err, resp, body)
 
   # queue requests until we get an auth token

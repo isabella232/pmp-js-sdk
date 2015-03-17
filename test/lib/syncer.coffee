@@ -25,9 +25,7 @@ describe 'syncer test', ->
 
     it 'gets by url', (done) ->
       sync.get TESTDOC, (resp) ->
-        expect(resp.status).to.equal(200)
-        expect(resp.success).to.be.true
-        expect(resp.radix).to.be.an('object')
+        expect(resp).to.be.a.response(200)
         expect(resp.radix.href).to.match(///#{TESTDOC}///)
         done()
 
@@ -37,7 +35,7 @@ describe 'syncer test', ->
         expect(doc).to.be
         sync._token = 'foobar'
         sync.get TESTDOC, (resp) ->
-          expect(resp.status).to.equal(200)
+          expect(resp).to.be.a.response(200)
           done()
 
   context 'with invalid client credentials', ->
@@ -50,9 +48,7 @@ describe 'syncer test', ->
 
     it 'cannot get other documents', (done) ->
       unauthsync.get TESTDOC, (resp) ->
-        expect(resp.status).to.equal(401)
-        expect(resp.success).to.be.false
-        expect(resp.radix).to.be.null
+        expect(resp).to.be.a.response(401)
         done()
 
   context 'with invalid api host', ->
@@ -65,8 +61,18 @@ describe 'syncer test', ->
 
     it 'cannot get other documents', (done) ->
       badsync.get TESTDOC, (resp) ->
-        expect(resp.status).to.equal(500)
-        expect(resp.success).to.be.false
-        expect(resp.radix).to.be.null
+        expect(resp).to.be.a.response(500)
         done()
 
+  context 'with missing client credentials', ->
+    missingsync = new Syncer(_.pick(SYNCCFG, 'clientid', 'host', 'debug'))
+
+    it 'still got the home document', (done) ->
+      missingsync.home (doc) ->
+        expect(doc).to.be.an('object')
+        done()
+
+    it 'cannot get other documents', (done) ->
+      missingsync.get TESTDOC, (resp) ->
+        expect(resp).to.be.a.response(401)
+        done()

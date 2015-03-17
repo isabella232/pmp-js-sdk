@@ -5,8 +5,6 @@
 
 A Node.JS module, providing a javascript API client for the [Public Media Platform](http://publicmediaplatform.org).  Also includes an experimental browser-ready javascript package.
 
-**WARNING! ACHTUNG!** This module is under heavy development - use at your own risk.
-
 ## Installation
 
 Install with the Node.JS package manager [npm](http://npmjs.org/)
@@ -43,17 +41,17 @@ More detailed docs/examples forthcoming.
 
 ## Developing
 
-This module is tested/compiled using [gulp.js](http://gulpjs.com/).  Check the `gulpfile.coffee` for the full list of commands.  But to start, you need to `cp test/support/config.json.example test/support/config.json`, and enter some PMP credentials to test with:
+This module is tested/compiled using [gulp.js](http://gulpjs.com/).  Check the `gulpfile.coffee` for the full list of commands.  But to start, you need to set some environment variables:
 
-```javascript
-{
-  "username":     "myusername",
-  "password":     "test1234",
-  "clientid":     "THISISABIGSTRING",
-  "clientsecret": "ASECRETSTRING",
-  "host":         "https://api.pmp.io"
-}
+```shell
+export PMP_HOST=https://api-sandbox.pmp.io
+export PMP_USERNAME=myusername
+export PMP_PASSWORD=test1234
+export PMP_CLIENT_ID=THISISABIGSTRING
+export PMP_CLIENT_SECRET=ASECRETSTRING
 ```
+
+I'd recommend only running the tests in the `api-sandbox` environment, as they tend to cause a bit of churn while testing CRUD functionality.  You can also add the above lines to a `.env` file, for easy re-use with a `source .env` command.
 
 Then you can use `gulp` to run the tests, and other tasks:
 
@@ -63,11 +61,22 @@ $ gulp build      # compile coffeescript
 $ gulp browserify # compile experimental browser js
 ```
 
+## Debug Output
+
+To `console.log` the actual HTTP requests being made to the PMP, simply configure your `PmpSdk` to debug mode:
+
+```javascript
+sdk = new PmpSdk({debug: true}); // basic debugging
+sdk = new PmpSdk({debug: 1});    // ... equivalent
+sdk = new PmpSdk({debug: 2});    // also prints response body json
+```
+
 ## PMP Proxy
 
-If you just want to explore the PMP, you can also proxy authentication locally.  Make sure you've created a `config.json` file with at least a `clientid`, `clientsecret` and `host`.  And BAM!  A click-through-able hypermedia API on http://localhost:8008!
+If you just want to explore the PMP, you can also proxy authentication locally.  Make sure you've set the `PMP_HOST` `PMP_CLIENT_ID` and `PMP_CLIENT_SECRET` environment variables.  And BAM!  A click-through-able hypermedia API on http://localhost:8008!
 
 ```shell
+$ source .env
 $ gulp proxy
 
 [10:44:22] Requiring external module coffee-script/register

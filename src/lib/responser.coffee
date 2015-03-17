@@ -65,6 +65,19 @@ module.exports =
         else
           callback module.exports.formatResponse(resp.statusCode, null, body)
 
+  # safely decode a response body
+  safeDecode: (callback = null) ->
+    (err, resp, body) ->
+      if callback
+        if typeof(body) == 'object'
+          callback(err, resp, body)
+        else
+          try
+            bodyObj = JSON.parse(body)
+            callback(err, resp, bodyObj)
+          catch error
+            callback(err, resp, body)
+
   # respond with a fatal error message
   error: (message, callback = null) ->
     callback module.exports.formatResponse(500, message)

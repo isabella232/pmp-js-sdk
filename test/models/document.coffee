@@ -31,6 +31,7 @@ describe 'document test', ->
 
     it 'fetches the home document', (done) ->
       Document.load @sync, CONFIG.host, (doc, resp) ->
+        expect(resp).to.be.a.response(200)
         expect(doc).to.be
         expect(doc.href).to.match(///#{CONFIG.host}///)
         done()
@@ -40,7 +41,7 @@ describe 'document test', ->
     it 'creates a new document, without waiting', (done) ->
       doc = new Document(@sync, TESTDOC)
       doc.save (doc, resp) ->
-        expect(resp.status).to.equal(202)
+        expect(resp).to.be.a.response(202)
         expect(doc.href).to.be
         expect(doc.attributes.guid).to.be
         done()
@@ -50,7 +51,7 @@ describe 'document test', ->
 
       doc = new Document(@sync, TESTDOC)
       doc.save true, (doc, resp) ->
-        expect(resp.status).to.equal(200)
+        expect(resp).to.be.a.response(200)
         expect(doc.href).to.be
         expect(doc.attributes.guid).to.be
         expect(doc.attributes.created).to.be
@@ -65,22 +66,22 @@ describe 'document test', ->
       @timeout(30000)
 
       unless SAVEDDOC
-        expect().fail('no saved doc - bailing!')
+        expect().assert(false, 'no saved doc - bailing!')
 
       SAVEDDOC.attributes.title = 'foobar2'
       SAVEDDOC.save true, (doc, resp) ->
-        expect(resp.status).to.equal(200)
+        expect(resp).to.be.a.response(200)
         expect(resp.radix.attributes.title).to.equal('foobar2')
         expect(doc.attributes.title).to.equal('foobar2')
         done()
 
     it 'updates an existing document, without waiting', (done) ->
       unless SAVEDDOC
-        expect().fail('no saved doc - bailing!')
+        expect().assert(false, 'no saved doc - bailing!')
 
       SAVEDDOC.attributes.title = 'foobar1'
       SAVEDDOC.save (doc, resp) ->
-        expect(resp.status).to.equal(202)
+        expect(resp).to.be.a.response(202)
         expect(resp.radix.attributes?).to.be.false
         done()
 
@@ -88,10 +89,10 @@ describe 'document test', ->
 
     it 'deletes existing documents', (done) ->
       unless SAVEDDOC
-        expect().fail('no saved doc - bailing!')
+        expect().assert(false, 'no saved doc - bailing!')
 
       SAVEDDOC.destroy (doc, resp) ->
-        expect(resp.status).to.equal(204)
+        expect(resp).to.be.a.response(204)
         expect(doc.href).to.be.null
         done()
 
