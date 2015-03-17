@@ -41,7 +41,10 @@ class Creds
     @home (home, errorResp = null) =>
       if home
         @_request 'get', home.credList(), null, (resp) ->
-          resp.radix = resp.radix.clients if resp.radix
+          if resp.success
+            resp.radix = if resp.radix then resp.radix.clients else []
+          else
+            resp.radix = resp.radix
           callback(resp)
       else
         callback(errorResp)
@@ -76,7 +79,7 @@ class Creds
     else
       params = @_getRequestParams(method, url, data)
       wrappedCallback = responser.http(callback)
-      wrappedCallback = @_debugCallback(params, wrappedCallback) if @_config.debug
+      wrappedCallback = @_debugCallback(params, wrappedCallback, @_config.debug) if @_config.debug
       request(params, wrappedCallback)
 
   # assemble params
@@ -94,14 +97,15 @@ class Creds
     params
 
   # debugging
-  _debugCallback: (params, originalCallback) ->
+  _debugCallback: (params, originalCallback, level) ->
     (err, resp, body) =>
       if err
         console.log "### ??? - #{params.method} #{params.url}"
-        # console.log "###       #{err}"
+        console.log "###       #{err}"
       else
         console.log "### #{resp.statusCode} - #{params.method} #{params.url}"
-        # console.log "###       #{JSON.stringify(body)}"
+        if level == 2 || level == '2'
+          console.log "###       #{JSON.stringify(body)}"
       originalCallback(err, resp, body)
 
 # class export

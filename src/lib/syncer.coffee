@@ -63,7 +63,7 @@ class Syncer
     else
       params = @_getRequestParams(method, url, params)
       wrappedCallback = responser.http(callback)
-      wrappedCallback = @_debugCallback(params, wrappedCallback) if @_config.debug
+      wrappedCallback = @_debugCallback(params, wrappedCallback, @_config.debug) if @_config.debug
       request(params, wrappedCallback)
 
   # assemble params
@@ -92,17 +92,18 @@ class Syncer
         @_queue.push(args)
         @_authenticate()
       else
-        originalCallback(resp)
+        originalCallback.apply(@, arguments)
 
   # debugging
-  _debugCallback: (params, originalCallback) ->
+  _debugCallback: (params, originalCallback, level) ->
     (err, resp, body) =>
       if err
         console.log "### ??? - #{params.originalMethod} #{params.url}"
         console.log "###       #{err}"
       else
         console.log "### #{resp.statusCode} - #{params.originalMethod} #{params.url}"
-        # console.log "###       #{JSON.stringify(body)}"
+        if level == 2 || level == '2'
+          console.log "###       #{JSON.stringify(body)}"
       originalCallback(err, resp, body)
 
   # queue requests until we get an auth token
