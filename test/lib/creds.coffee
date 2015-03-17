@@ -49,7 +49,9 @@ describe 'client credentials test', ->
       @badcreds.list (resp) ->
         expect(resp.status).to.equal(401)
         expect(resp.success).to.be.false
-        expect(resp.radix).to.be.null
+        expect(resp.radix).to.be.an('object')
+        expect(resp.radix.errors).to.be.an('object')
+        expect(resp.radix.errors.title).to.equal('Unauthorized')
         done()
 
   context 'with an invalid api location', ->
