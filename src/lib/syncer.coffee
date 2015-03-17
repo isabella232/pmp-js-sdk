@@ -65,6 +65,7 @@ class Syncer
     else
       params = @_getRequestParams(method, url, params)
       wrappedCallback = responser.http(callback)
+      wrappedCallback = responser.safeDecode(wrappedCallback)
       wrappedCallback = @_debugCallback(params, wrappedCallback, @_config.debug) if @_config.debug
       request(params, wrappedCallback)
 
@@ -80,7 +81,6 @@ class Syncer
       params.auth = {bearer: @_token}
     else if @_config.clientid && @_config.clientsecret
       params.auth = {user: @_config.clientid, pass: @_config.clientsecret}
-    params.json = true
     params.headers = _.defaults(params.headers || {}, {
       'Accept': @_config.accept,
       'User-Agent': @_config.useragent
@@ -112,7 +112,7 @@ class Syncer
       else
         console.log "### #{resp.statusCode} - #{params.originalMethod} #{params.url}"
         if level == 2 || level == '2'
-          console.log "###       #{JSON.stringify(body)}"
+          console.log "###       #{body}"
       originalCallback(err, resp, body)
 
   # queue requests until we get an auth token

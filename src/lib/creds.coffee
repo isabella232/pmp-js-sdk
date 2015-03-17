@@ -79,6 +79,7 @@ class Creds
     else
       params = @_getRequestParams(method, url, data)
       wrappedCallback = responser.http(callback)
+      wrappedCallback = responser.safeDecode(wrappedCallback)
       wrappedCallback = @_debugCallback(params, wrappedCallback, @_config.debug) if @_config.debug
       request(params, wrappedCallback)
 
@@ -88,7 +89,6 @@ class Creds
       method:  method.toUpperCase()
       url:     url
       auth:    {user: @_config.username, pass: @_config.password}
-      json:    true
       headers: {'Accept': @_config.accept}
     unless _.isEmpty(data)
       serialized = _.map data, (v, k) -> "#{encodeURIComponent(k)}=#{encodeURIComponent(v)}"
@@ -105,7 +105,7 @@ class Creds
       else
         console.log "### #{resp.statusCode} - #{params.method} #{params.url}"
         if level == 2 || level == '2'
-          console.log "###       #{JSON.stringify(body)}"
+          console.log "###       #{body}"
       originalCallback(err, resp, body)
 
 # class export
