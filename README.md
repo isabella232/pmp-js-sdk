@@ -61,6 +61,16 @@ $ gulp build      # compile coffeescript
 $ gulp browserify # compile experimental browser js
 ```
 
+## Debug Output
+
+To `console.log` the actual HTTP requests being made to the PMP, simply configure your `PmpSdk` to debug mode:
+
+```javascript
+sdk = new PmpSdk({debug: true}); // basic debugging
+sdk = new PmpSdk({debug: 1});    // ... equivalent
+sdk = new PmpSdk({debug: 2});    // also prints response body json
+```
+
 ## PMP Proxy
 
 If you just want to explore the PMP, you can also proxy authentication locally.  Make sure you've set the `PMP_HOST` `PMP_CLIENT_ID` and `PMP_CLIENT_SECRET` environment variables.  And BAM!  A click-through-able hypermedia API on http://localhost:8008!
