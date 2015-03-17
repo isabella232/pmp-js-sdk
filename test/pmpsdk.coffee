@@ -78,6 +78,15 @@ describe 'pmpsdk test', ->
           expect(user2.attributes.title).to.equal(user.attributes.title)
           done()
 
+    it 'also accepts the underscore-d versions of clientid/secret', (done) ->
+      CFG2 = _.omit(CFG, 'clientid', 'clientsecret')
+      CFG2.client_id = CFG.clientid
+      CFG2.client_secret = CFG.clientsecret
+      sdk2 = new PmpSdk(CFG2)
+      sdk2.fetchDoc TESTGUID, (doc) ->
+        expect(doc.href).to.include(TESTGUID)
+        done()
+
   describe '#query', ->
 
     it 'queries for docs', (done) ->
