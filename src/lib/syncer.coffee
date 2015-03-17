@@ -17,6 +17,8 @@ class Syncer
     clientid:     null
     clientsecret: null
     debug:        false
+    minimal:      true
+    gzipped:      true
 
   constructor: (config = {}) ->
     @_home     = null
@@ -83,6 +85,13 @@ class Syncer
       'Accept': @_config.accept,
       'User-Agent': @_config.useragent
     })
+
+    # optional gzipped and minimal responses
+    if @_config.minimal && @_token
+      params.headers['Prefer'] = 'return=minimal'
+    if @_config.gzipped
+      params.gzip = true
+
     params
 
   # retry 401's once - for token expirations
