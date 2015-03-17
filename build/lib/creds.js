@@ -58,8 +58,10 @@ Creds = (function() {
         }
         if (home) {
           return _this._request('get', home.credList(), null, function(resp) {
-            if (resp.radix) {
-              resp.radix = resp.radix.clients;
+            if (resp.success) {
+              resp.radix = resp.radix ? resp.radix.clients : [];
+            } else {
+              resp.radix = resp.radix;
             }
             return callback(resp);
           });
@@ -126,7 +128,7 @@ Creds = (function() {
       params = this._getRequestParams(method, url, data);
       wrappedCallback = responser.http(callback);
       if (this._config.debug) {
-        wrappedCallback = this._debugCallback(params, wrappedCallback);
+        wrappedCallback = this._debugCallback(params, wrappedCallback, this._config.debug);
       }
       return request(params, wrappedCallback);
     }
@@ -156,13 +158,17 @@ Creds = (function() {
     return params;
   };
 
-  Creds.prototype._debugCallback = function(params, originalCallback) {
+  Creds.prototype._debugCallback = function(params, originalCallback, level) {
     return (function(_this) {
       return function(err, resp, body) {
         if (err) {
           console.log("### ??? - " + params.method + " " + params.url);
+          console.log("###       " + err);
         } else {
           console.log("### " + resp.statusCode + " - " + params.method + " " + params.url);
+          if (level === 2 || level === '2') {
+            console.log("###       " + (JSON.stringify(body)));
+          }
         }
         return originalCallback(err, resp, body);
       };

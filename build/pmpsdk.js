@@ -16,6 +16,12 @@ PmpSdk = (function() {
       config = {};
     }
     this.config = config;
+    if (this.config.client_id) {
+      this.config.clientid = this.config.client_id;
+    }
+    if (this.config.client_secret) {
+      this.config.clientsecret = this.config.client_secret;
+    }
     this.sync = new Syncer(config);
   }
 

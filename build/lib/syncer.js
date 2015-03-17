@@ -92,7 +92,7 @@ Syncer = (function() {
       params = this._getRequestParams(method, url, params);
       wrappedCallback = responser.http(callback);
       if (this._config.debug) {
-        wrappedCallback = this._debugCallback(params, wrappedCallback);
+        wrappedCallback = this._debugCallback(params, wrappedCallback, this._config.debug);
       }
       return request(params, wrappedCallback);
     }
@@ -132,13 +132,13 @@ Syncer = (function() {
           _this._queue.push(args);
           return _this._authenticate();
         } else {
-          return originalCallback(resp);
+          return originalCallback.apply(_this, arguments);
         }
       };
     })(this);
   };
 
-  Syncer.prototype._debugCallback = function(params, originalCallback) {
+  Syncer.prototype._debugCallback = function(params, originalCallback, level) {
     return (function(_this) {
       return function(err, resp, body) {
         if (err) {
@@ -146,6 +146,9 @@ Syncer = (function() {
           console.log("###       " + err);
         } else {
           console.log("### " + resp.statusCode + " - " + params.originalMethod + " " + params.url);
+          if (level === 2 || level === '2') {
+            console.log("###       " + (JSON.stringify(body)));
+          }
         }
         return originalCallback(err, resp, body);
       };
