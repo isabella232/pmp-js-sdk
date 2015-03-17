@@ -66,7 +66,7 @@ describe 'document test', ->
       @timeout(30000)
 
       unless SAVEDDOC
-        expect().fail('no saved doc - bailing!')
+        expect().assert(false, 'no saved doc - bailing!')
 
       SAVEDDOC.attributes.title = 'foobar2'
       SAVEDDOC.save true, (doc, resp) ->
@@ -77,7 +77,7 @@ describe 'document test', ->
 
     it 'updates an existing document, without waiting', (done) ->
       unless SAVEDDOC
-        expect().fail('no saved doc - bailing!')
+        expect().assert(false, 'no saved doc - bailing!')
 
       SAVEDDOC.attributes.title = 'foobar1'
       SAVEDDOC.save (doc, resp) ->
@@ -89,7 +89,7 @@ describe 'document test', ->
 
     it 'deletes existing documents', (done) ->
       unless SAVEDDOC
-        expect().fail('no saved doc - bailing!')
+        expect().assert(false, 'no saved doc - bailing!')
 
       SAVEDDOC.destroy (doc, resp) ->
         expect(resp).to.be.a.response(204)
