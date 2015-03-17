@@ -1,13 +1,16 @@
 #
 # global testing includes
 #
+chai = require('chai')
+chai.use(require('./matchers.coffee'))
+
 module.exports =
 
   # greatest lib
   underscore: require('underscore')
 
   # expect-flavored assertions
-  expect: require('chai').expect
+  expect: chai.expect
 
   # remote api configuration
   config: require('./config.coffee')
