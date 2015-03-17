@@ -20,7 +20,9 @@ Syncer = (function() {
     useragent: 'pmp-js-sdk-' + PkgJson.version,
     clientid: null,
     clientsecret: null,
-    debug: false
+    debug: false,
+    minimal: true,
+    gzipped: true
   };
 
   function Syncer(config) {
@@ -122,6 +124,12 @@ Syncer = (function() {
       'Accept': this._config.accept,
       'User-Agent': this._config.useragent
     });
+    if (this._config.minimal && this._token) {
+      params.headers['Prefer'] = 'return=minimal';
+    }
+    if (this._config.gzipped) {
+      params.gzip = true;
+    }
     return params;
   };
 
