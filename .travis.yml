@@ -1,7 +1,8 @@
 language: node_js
 node_js:
-  - "0.11"
-  - "0.10"
+- '0.11'
+- '0.10'
 sudo: false
-# notifications:
-#   irc: "irc.freenode.org#pmp"
+notifications:
+  slack:
+    secure: AI36sigWpt7oyPbZM46nPu/lXJcGszbDPS5z21t5fvQ5laKhucUdDi7OuyVew64MN9PV/yolr79ios0QoQ7zUmQvu4o+msTVNcRi/80zGt36pxuwfNusAaRkY4mixsCZRYM9O2CtAhYvnbeF6S0Sk4qmb+OgC38zsMAB6j6fzYg=
