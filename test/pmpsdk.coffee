@@ -100,7 +100,7 @@ describe 'pmpsdk test', ->
         done()
 
     it 'queries for groups', (done) ->
-      @sdk.queryGroups {limit: 1}, (query, resp) ->
+      @sdk.queryGroups {limit: 1, text: 'NOT test'}, (query, resp) ->
         expect(resp).to.be.a.response(200)
         expect(query.items.length).to.equal(1)
         expect(query.items[0].items.length).to.be.above(0)
