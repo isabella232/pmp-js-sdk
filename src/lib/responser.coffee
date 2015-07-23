@@ -71,12 +71,13 @@ module.exports =
       if callback
         if typeof(body) == 'object'
           callback(err, resp, body)
+        else if body == null
+          callback(err, resp, body)
         else
           try
-            bodyObj = JSON.parse(body)
-            callback(err, resp, bodyObj)
+            body = JSON.parse(body)
           catch error
-            callback(err, resp, body)
+          callback(err, resp, body)
 
   # respond with a fatal error message
   error: (message, callback = null) ->
