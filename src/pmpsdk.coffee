@@ -64,22 +64,20 @@ class PmpSdk
   queryUrl: (url, callback) ->
     Query.load @sync, url, callback
 
-  # creation
+  # new unsaved doc, that will assign it's own profile link on first save
+  newDoc: (profileGuid, attrs) ->
+    doc = new Document(@sync, {attributes: attrs})
+    doc.save = _.wrap doc.save, (oldSave, oldArgs...) =>
+      @sync.home (home) =>
+        if profileGuid || !doc.links.profile
+          doc.links.profile = [{href: home.profileFetch(profileGuid)}]
+        doc.save = oldSave
+        oldSave.apply(doc, oldArgs)
+    doc
+
+  # create and save a doc
   createDoc: (profileGuid, attrs, wait, callback) ->
-    if _.isFunction(wait)
-      callback = wait
-      wait = false
-    @fetchProfile profileGuid, (profile, resp) =>
-      if resp.success
-        data =
-          attributes: attrs,
-          links:
-            profile: [{href: profile.href}]
-        doc = new Document(@sync, data)
-        doc.save(wait, callback)
-      else
-        callback(null, resp)
-  createUpload: () ->
-    # TODO
+    doc = @newDoc(profileGuid, attrs)
+    doc.save(wait, callback)
 
 module.exports = PmpSdk
