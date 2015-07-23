@@ -21,12 +21,20 @@ class Syncer
     gzipped:      true
 
   constructor: (config = {}) ->
+    @_config   = _.defaults(config, configDefaults)
+    @_queue    = []
     @_home     = null
     @_homeResp = null
-    @_queue    = []
     @_token    = null
-    @_fetchingToken = false
-    @_config = _.defaults(config, configDefaults)
+
+    # optional cached home/token
+    if config.home
+      @_home = new BaseDoc(config.home)
+      @_homeResp = responser.formatResponse(null, null, config.home)
+    if config.token
+      @_token = config.token
+
+    # kick off authentication - will skip home/token if cached
     @_authenticate()
 
   token: (callback) ->
@@ -87,7 +95,9 @@ class Syncer
     })
 
     # optional gzipped and minimal responses
-    if @_config.minimal && @_token
+    if params.minimal == false
+      delete params.minimal
+    else if @_config.minimal && @_token
       params.headers['Prefer'] = 'return=minimal'
     if @_config.gzipped
       params.gzip = true
@@ -99,6 +109,7 @@ class Syncer
     (resp) =>
       if resp.status == 401
         @_queue.push(args)
+        @_token = null
         @_authenticate()
       else
         originalCallback.apply(@, arguments)
@@ -117,7 +128,7 @@ class Syncer
 
   # queue requests until we get an auth token
   _requestOrQueue: (method, url, params = {}, callback = null) ->
-    if @_token
+    if @_home && @_token
       @_request(method, url, params, @_retryCallback(arguments, callback))
     else
       @_queue.push(arguments)
@@ -137,21 +148,23 @@ class Syncer
 
   # chain fetching home doc and auth token
   _authenticate: ->
-    unless @_fetchingToken
-      @_token = null
-      @_fetchingToken = true
+    unless @_authenticating
+      @_authenticating = true
       @_fetchHome (resp) =>
-        if resp.success
+        if resp.success && @_token
+          @_authenticating = false
+          @_clearQueue()
+        else if !resp.success
+          @_authenticating = false
+          @_clearQueue(resp)
+        else
           @_fetchToken (resp) =>
-            @_fetchingToken = false
+            @_authenticating = false
             if resp.success
               @_token = resp.radix.access_token
               @_clearQueue()
             else
               @_clearQueue(resp)
-        else
-          @_fetchingToken = false
-          @_clearQueue(resp)
 
   # get an auth token - @_home doc MUST be set
   _fetchToken: (callback) ->
@@ -162,15 +175,18 @@ class Syncer
 
   # get home document
   _fetchHome: (callback) ->
-    @_request 'get', @_config.host, {auth: false}, (resp) =>
-      @_homeResp = resp
-      if resp.success
-        @_home = new BaseDoc(resp.radix)
-        unless @_home.authCreate()
-          resp.success = false
-          resp.status  = 500
-          resp.message = 'Home document missing auth token issue link'
-      callback(resp)
+    if @_home && @_homeResp
+      callback(@_homeResp)
+    else
+      @_request 'get', @_config.host, {auth: false, minimal: false}, (resp) =>
+        @_homeResp = resp
+        if resp.success
+          @_home = new BaseDoc(resp.radix)
+          unless @_home.authCreate()
+            resp.success = false
+            resp.status  = 500
+            resp.message = 'Home document missing auth token issue link'
+        callback(resp)
 
 # class export
 module.exports = Syncer

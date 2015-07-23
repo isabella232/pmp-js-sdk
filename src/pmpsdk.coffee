@@ -80,4 +80,27 @@ class PmpSdk
     doc = @newDoc(profileGuid, attrs)
     doc.save(wait, callback)
 
+  # serialize/unserialize for caching
+  serialize: (callback) ->
+    @sync.home (home, homeResp) =>
+      @sync.token (token) =>
+        if homeResp && token
+          savedConfig = _.pick(@config, 'host', 'clientid', 'clientsecret', 'username', 'password')
+          savedConfig.token = token
+          savedConfig.home = homeResp.radix
+          callback(JSON.stringify(savedConfig))
+        else
+          callback(null)
+  serializeTokenOnly: (callback) =>
+    @serialize (str) =>
+      if str
+        savedConfig = _.omit(JSON.parse(str), 'clientid', 'clientsecret', 'username', 'password')
+        callback(JSON.stringify(savedConfig))
+      else
+        callback(str)
+
+# static method to unserialize sdk
+PmpSdk.unserialize = (str, overrides) ->
+  new PmpSdk(_.defaults(overrides, JSON.parse(str)))
+
 module.exports = PmpSdk
