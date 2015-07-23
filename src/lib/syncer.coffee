@@ -21,8 +21,11 @@ class Syncer
     gzipped:      true
 
   constructor: (config = {}) ->
-    @_config    = _.defaults(config, configDefaults)
-    @_queue     = []
+    @_config   = _.defaults(config, configDefaults)
+    @_queue    = []
+    @_home     = null
+    @_homeResp = null
+    @_token    = null
 
     # optional cached home/token
     if config.home
