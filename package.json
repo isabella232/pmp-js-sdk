@@ -1,6 +1,6 @@
 {
   "name": "pmpsdk",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Javascript api client for the Public Media Platform",
   "homepage": "https://github.com/publicmediaplatform/pmp-js-sdk",
   "main": "build/pmpsdk.js",
