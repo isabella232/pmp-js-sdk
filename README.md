@@ -60,7 +60,7 @@ var sdk = new PmpSdk(config);
 | `clientsecret` | Yes      | Your PMP `client_secret`
 | `debug`        |          | Set to `"1"` or `"2"` to have the SDK `console.log` debug request output.
 
-### Responses
+### HTTP Responses
 
 In many cases, callbacks from the `PmpSdk` will include an "HTTP Response" object, in addition to other return values.  This `resp` will always have the following format:
 
@@ -72,6 +72,8 @@ var resp = {
   radix: { /* the json-decoded response body */ }
 };
 ```
+
+### Documents
 
 The `PmpSdk` may also return a `doc` with a response.  This is a javascript class extending the `CollectionDoc+Json` object, with some additional methods allowing you to interact/navigate the PMP.
 
