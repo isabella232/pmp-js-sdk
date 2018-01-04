@@ -1,6 +1,6 @@
 # PMP Javascript SDK
 
-[![Build Status](https://travis-ci.org/publicmediaplatform/pmp-js-sdk.svg?branch=master)](https://travis-ci.org/publicmediaplatform/pmp-js-sdk)
+[![Build Status](https://travis-ci.org/npr/pmp-js-sdk.svg?branch=master)](https://travis-ci.org/npr/pmp-js-sdk)
 [![NPM version](https://badge.fury.io/js/pmpsdk.svg)](http://badge.fury.io/js/pmpsdk)
 
 A Node.JS module, providing a javascript API client for the [Public Media Platform](http://publicmediaplatform.org).  Also includes an experimental browser-ready javascript package.
@@ -16,7 +16,7 @@ $ npm install pmpsdk
 or install via git clone:
 
 ```shell
-$ git clone git://github.com/publicmediaplatform/pmp-js-sdk.git
+$ git clone git://github.com/npr/pmp-js-sdk.git
 $ cd pmp-js-sdk
 $ npm install
 ```
@@ -142,7 +142,7 @@ All these methods for querying the PMP have callbacks of `function(doc, resp)`. 
 | `fetchSchema(alias, callback)`             | Fetch a schema by guid or alias.
 | `fetchTopic(alias, callback)`              | Fetch a topic by guid or alias.
 | `fetchUser(alias, callback)`               | Fetch a user by guid or alias.
-| `queryDocs(params, callback)`              | Search for any doc, with an object [query fields](https://github.com/publicmediaplatform/pmpdocs/wiki/Querying-the-API#fields).
+| `queryDocs(params, callback)`              | Search for any doc, with an object [query fields](https://github.com/npr/pmp-docs-wiki/wiki/Querying-the-API#fields).
 | `queryCollection(alias, params, callback)` | Search for documents within a collection (by guid or alias).
 | `queryGroups(params, callback)`            | Search for groups.
 | `queryProfiles(params, callback)`          | Search for profiles.
