@@ -2,14 +2,14 @@
   "name": "pmpsdk",
   "version": "0.0.7",
   "description": "Javascript api client for the Public Media Platform",
-  "homepage": "https://github.com/publicmediaplatform/pmp-js-sdk",
+  "homepage": "https://github.com/npr/pmp-js-sdk",
   "main": "build/pmpsdk.js",
   "scripts": {
     "test": "gulp test"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/publicmediaplatform/pmp-js-sdk.git"
+    "url": "git://github.com/npr/pmp-js-sdk.git"
   },
   "keywords": [
     "pmp",
@@ -21,7 +21,7 @@
   "owner": "Public Media Platform (http://pmp.io)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/publicmediaplatform/pmp-js-sdk/issues"
+    "url": "https://github.com/npr/pmp-js-sdk/issues"
   },
   "devDependencies": {
     "chai": "^1.9.1",
