@@ -1,7 +1,7 @@
 {
   "name": "pmpsdk",
-  "version": "0.0.7",
-  "description": "Javascript api client for the Public Media Platform",
+  "version": "0.0.8",
+  "description": "JavaScript API client for the Public Media Platform",
   "homepage": "https://github.com/npr/pmp-js-sdk",
   "main": "build/pmpsdk.js",
   "scripts": {
@@ -17,8 +17,6 @@
     "pubmedia",
     "hypermedia"
   ],
-  "author": "cavis <r@cav.is> (http://cav.is)",
-  "owner": "Public Media Platform (http://pmp.io)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/npr/pmp-js-sdk/issues"
